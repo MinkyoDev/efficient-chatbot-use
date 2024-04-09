@@ -1,14 +1,9 @@
-import utils.OpenAIRequest;
+import Controllers.ChatController;
 
 public class Main {
 
 	public static void main(String[] args) {
-		String message = "안녕?";
-		
-		OpenAIRequest openAIRequest = new OpenAIRequest();
-		String response = openAIRequest.chatBot(message);
-		System.out.println(response);
+		ChatController.chatController();
 	}
-	
 	
 }
