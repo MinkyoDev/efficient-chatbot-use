@@ -155,6 +155,19 @@ begin
 end;
 /
 
+CREATE OR REPLACE TRIGGER Before_Delete_Chat
+BEFORE DELETE
+ON Chat
+FOR EACH ROW
+BEGIN
+    -- Chat_log 테이블에서 참조를 먼저 삭제
+    DELETE FROM Chat_log WHERE chat_id = :OLD.chat_id;
+    
+    -- History 테이블에서 참조를 먼저 삭제
+    DELETE FROM History WHERE chat_id = :OLD.chat_id;
+END;
+/
+
 -- 데이터 넣기
 insert into models values ('gpt-3.5-turbo-1106', 'openAI', 0.0010/1000, 0.0020/1000);
 insert into models values ('gpt-3.5-turbo-instruct', 'openAI', 0.0015/1000, 0.0020/1000);
@@ -173,8 +186,9 @@ commit;
 --insert into history (history_id, chat_id, deps, is_full, summary, prompt_tokens, completion_tokens) values (hisid_seq.nextVal, 1, 0, 0, '', 10, 10);
 --rollback;
 
+delete from chat where chat_id = 1;
 --select * from chat where user_id = '22';
-select * from chat_log where chat_id = 1;
+--select * from chat_log where chat_id = 1;
 --select * from chat;
 --update users set is_active = 1 where id = '22';
 --select * from users;
