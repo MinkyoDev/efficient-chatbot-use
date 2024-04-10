@@ -31,16 +31,26 @@ CREATE TABLE History (
 	is_full	char(1)	DEFAULT 0	NOT NULL,
 	summary	varChar2(4000)		NULL,
 	prompt_tokens	number		NOT NULL,
-	completion_tokens	number		NOT NULL
+	completion_tokens	number		NOT NULL,
+	parants_his	number		NULL
 );
 
 DROP TABLE Chat;
 
 CREATE TABLE Chat (
 	chat_id	number		NOT NULL,
-	user_id	varChar(500)		NOT NULL,
+	user_id	varChar2(100)		NOT NULL,
+	name	varChar2(500)		NULL,
 	memory_enabled	char(1)	DEFAULT 1	NOT NULL,
 	ceche_enabled	char(1)		NOT NULL
+);
+
+DROP TABLE Users;
+
+CREATE TABLE Users (
+	id	varChar2(100)		NOT NULL,
+	password	varChar2(100)		NOT NULL,
+	is_active	char(1)	DEFAULT 1	NOT NULL
 );
 
 ALTER TABLE Chat_log ADD CONSTRAINT PK_CHAT_LOG PRIMARY KEY (
@@ -57,6 +67,10 @@ ALTER TABLE History ADD CONSTRAINT PK_HISTORY PRIMARY KEY (
 
 ALTER TABLE Chat ADD CONSTRAINT PK_CHAT PRIMARY KEY (
 	chat_id
+);
+
+ALTER TABLE Users ADD CONSTRAINT PK_USERS PRIMARY KEY (
+	id
 );
 
 ALTER TABLE Chat_log ADD CONSTRAINT FK_Chat_TO_Chat_log_1 FOREIGN KEY (
@@ -86,6 +100,21 @@ ALTER TABLE History ADD CONSTRAINT FK_Chat_TO_History_1 FOREIGN KEY (
 REFERENCES Chat (
 	chat_id
 );
+
+ALTER TABLE History ADD CONSTRAINT FK_History_TO_History_1 FOREIGN KEY (
+	parants_his
+)
+REFERENCES History (
+	history_id
+);
+
+ALTER TABLE Chat ADD CONSTRAINT FK_Users_TO_Chat_1 FOREIGN KEY (
+	user_id
+)
+REFERENCES Users (
+	id
+);
+
 
 -- 시퀀스
 drop sequence chatid_seq;
@@ -133,7 +162,10 @@ insert into models values ('gpt-4', 'openAI', 0.03/1000, 0.06/1000);
 insert into models values ('gpt-4-1106-preview', 'openAI', 0.01/1000, 0.03/1000);
 commit;
 
-insert into chat (chat_id, user_id, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, 'aa', 1, 1);
+insert into users (id, password) values ('22', '2222');
+commit;
+
+insert into chat (chat_id, user_id, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, '22', 1, 1);
 commit;
 
 --insert into chat_log (log_id, chat_id, model_name, request, response, prompt_tokens, completion_tokens) values (logid_seq.nextVal, 1, 'gpt-3.5-turbo-1106', '안녕', '안녕하세요! 무엇을 도와드릴까요?',10, 10);
@@ -141,8 +173,15 @@ commit;
 --insert into history (history_id, chat_id, deps, is_full, summary, prompt_tokens, completion_tokens) values (hisid_seq.nextVal, 1, 0, 0, '', 10, 10);
 --rollback;
 
+--select * from chat where user_id = '22';
+select * from chat_log where chat_id = 1;
+--select * from chat;
+--update users set is_active = 1 where id = '22';
+--select * from users;
+--commit;
+--insert into users (id, password, is_active) values ('11', '11111', 1);
 --select * from history ;
---delete from history;
+--delete from users;
 --select sum(prompt_tokens) + sum(completion_tokens) total_tokens from chat_log where history_id is null and chat_id = 1;
 --select logs.user_id, logs.chat_id, logs.request, logs.response from(select * from chat_log join Chat using (chat_id) where chat_id = 1 order by create_at desc) logs where rownum<=5 order by logs.create_at asc;
 --select * from chat_log join Chat using (chat_id) where chat_id = 1 and history_id is null order by create_at;

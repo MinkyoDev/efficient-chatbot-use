@@ -9,124 +9,110 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.ChatDTO;
-import DTO.HistoryDTO;
 import DTO.LogDTO;
 import utils.DBUtil;
 
 public class ChatDAO {
-
+	
 	Connection conn;
 	Statement st;
 	PreparedStatement pst;
 	ResultSet rs;
+	
+	public int insertChat(ChatDTO chat) {
+	    int generatedChatId = 0;
+	    String sql = "INSERT INTO chat (chat_id, user_id, memory_enabled, ceche_enabled) "
+	            + "VALUES (chatid_seq.nextVal, ?, ?, ?)";
+	    conn = DBUtil.dbConnection();
+	    try {
+	        pst = conn.prepareStatement(sql, new String[] { "chat_id" });
+	        pst.setString(1, chat.getUser_id());
+	        pst.setBoolean(2, chat.isMemory_enabled());
+	        pst.setBoolean(3, chat.isCeche_enabled());
+	        int result = pst.executeUpdate();
+	        
+	        if (result > 0) {
+	            rs = pst.getGeneratedKeys();
+	            if (rs.next()) {
+	                generatedChatId = rs.getBigDecimal(1).intValueExact();
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        DBUtil.dbDisconnect(conn, pst, rs);
+	    }
+	    return generatedChatId;
+	}
+	
+	// select
+	public List<ChatDTO> selectAll(String userid) {
+		List<ChatDTO> chatList = new ArrayList<>();
+		String sql = "select * from chat where user_id = ?";
+		conn = DBUtil.dbConnection();
+		try {
+ 			pst = conn.prepareStatement(sql);
+			pst.setString(1, userid);
+			rs = pst.executeQuery();
+			while (rs.next()) {
+				ChatDTO chat = makeChat(rs);
+				chatList.add(chat);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.dbDisconnect(conn, st, rs);
+		}
+		return chatList;
+	}
+	
+	public List<ChatDTO> selectByChatid(String chatid) {
+		List<ChatDTO> chatLogList = new ArrayList<>();
+		String sql = "select * from chat_log where chat_id = ?";
+		conn = DBUtil.dbConnection();
+		try {
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, chatid);
+			rs = pst.executeQuery();
+			while (rs.next()) {
+				ChatDTO chat = makeChat(rs);
+				chatLogList.add(chat);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.dbDisconnect(conn, st, rs);
+		}
+		return chatLogList;
+	}
 
-	public int insertChatLog(ChatDTO chat) {
+	public int deleteChat(int chatid) {
 		int result = 0;
-		String sql = "insert into chat_log (log_id, chat_id, model_name, request, response, prompt_tokens, completion_tokens) "
-				+ "values (chatid_seq.nextVal, 1, 'gpt-3.5-turbo-1106', ?, ?, ?, ?)";
-		conn = DBUtil.dbConnection();		
-		try {
-			conn.setAutoCommit(false);
-			pst = conn.prepareStatement(sql);
-			pst.setString(1, chat.getRequest());
-			pst.setString(2, chat.getResponse());
-			pst.setInt(3, chat.getPrompt_tokens());
-			pst.setInt(4, chat.getCompletion_tokens());
-			result = pst.executeUpdate();
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		} finally {
-			DBUtil.dbDisconnect(conn, pst, rs);
-		}
-		return result;
+	    String sql = "DELETE FROM chat WHERE chat_id = ?";
+	    conn = DBUtil.dbConnection();
+	    try {
+	        pst = conn.prepareStatement(sql);
+	        pst.setInt(1, chatid);
+	        result = pst.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        DBUtil.dbDisconnect(conn, pst, null);
+	    }
+	    return result;
 	}
 	
-	public int calculateTotalTokens(int chatid) {
-		int totalTokens = 0;
-		String sql = "select sum(prompt_tokens) + sum(completion_tokens) total_tokens from chat_log where history_id is null and chat_id = ?";
-		conn = DBUtil.dbConnection();
-		try {
-			conn.setAutoCommit(false);
-			pst = conn.prepareStatement(sql);
-			pst.setInt(1, chatid);
-			rs = pst.executeQuery();
-			rs.next();
-			totalTokens = rs.getInt("total_tokens");
-			System.out.println(totalTokens);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.dbDisconnect(conn, pst, rs);
-		}
-		return totalTokens;
+	public ChatDTO makeChat(ResultSet rs) throws SQLException {
+		ChatDTO chat = new ChatDTO();
+		chat.setChat_id(rs.getInt("chat_id"));
+		chat.setUser_id(rs.getString("user_id"));
+		chat.setName(rs.getString("name"));
+		chat.setMemory_enabled(rs.getBoolean("memory_enabled"));
+		chat.setCeche_enabled(rs.getBoolean("ceche_enabled"));
+		return chat;
 	}
 	
-	public List<LogDTO> selectAllByChatID(int chatid) {
-		List<LogDTO> loglist = new ArrayList<>();
-		String sql = "select * from chat_log join Chat using (chat_id) where chat_id = ?";
-		conn = DBUtil.dbConnection();
-		try {
-			conn.setAutoCommit(false);
-			pst = conn.prepareStatement(sql);
-			pst.setInt(1, chatid);
-			rs = pst.executeQuery();
-			while (rs.next()) {
-				LogDTO log = makeLogPrint(rs);
-				loglist.add(log);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.dbDisconnect(conn, st, rs);
-		}
-		return loglist;
-	}
-	
-	public List<LogDTO> selectByChatIDisNull(int chatid) {
-		List<LogDTO> loglist = new ArrayList<>();
-		String sql = "select * from chat_log join Chat using (chat_id) where chat_id = ? and history_id is null order by create_at";
-		conn = DBUtil.dbConnection();
-		try {
-			conn.setAutoCommit(false);
-			pst = conn.prepareStatement(sql);
-			pst.setInt(1, chatid);
-			rs = pst.executeQuery();
-			while (rs.next()) {
-				LogDTO log = makeLogPrint(rs);
-				loglist.add(log);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.dbDisconnect(conn, st, rs);
-		}
-		return loglist;
-	}
-	
-	public List<LogDTO> selectTopNByChatID(int chatid, int N) {
-		List<LogDTO> loglist = new ArrayList<>();
-		String sql = "select logs.user_id, logs.chat_id, logs.request, logs.response "
-				+ "from(select * from chat_log join Chat using (chat_id) where chat_id = ? order by create_at desc) logs where rownum<=? order by logs.create_at asc";
-		conn = DBUtil.dbConnection();
-		try {
-			conn.setAutoCommit(false);
-			pst = conn.prepareStatement(sql);
-			pst.setInt(1, chatid);
-			pst.setInt(2, N);
-			rs = pst.executeQuery();
-			while (rs.next()) {
-				LogDTO log = makeLogPrint(rs);
-				loglist.add(log);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.dbDisconnect(conn, st, rs);
-		}
-		return loglist;
-	}
-
-	private LogDTO makeLogPrint(ResultSet rs) throws SQLException {
+	private LogDTO makeLog(ResultSet rs) throws SQLException {
 		LogDTO log = new LogDTO();
 		log.setChat_id(rs.getInt("chat_id"));
 		log.setUser_id(rs.getString("user_id"));
@@ -134,4 +120,6 @@ public class ChatDAO {
 		log.setResponse(rs.getString("response"));
 		return log;
 	}
+
+
 }

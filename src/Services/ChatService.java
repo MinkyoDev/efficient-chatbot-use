@@ -1,94 +1,39 @@
-package Services;
+package services;
 
-import java.util.HashMap;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import DAO.ChatDAO;
-import DAO.HistoryDAO;
+import DAO.ChatLogDAO;
 import DTO.ChatDTO;
-import DTO.HistoryDTO;
 import DTO.LogDTO;
-import utils.Constants;
-import utils.OpenAIRequest;
 
 public class ChatService {
 
-	OpenAIRequest openAIRequest = new OpenAIRequest();
 	ChatDAO chatDAO = new ChatDAO();
-	HistoryDAO historyDAO = new HistoryDAO();
-	JSONObject jr;
+	ChatLogDAO chatLogDAO = new ChatLogDAO();
 
-	public String getChatbotResponse(int chatid, String input) {
-		if (input.equals("")) {
-			return "내용을 입력해 주세요.";
-		}
-		
-		// cache 조회
-		checkSameContents(chatid, input);
-
-		// 프롬프트 제작
-		HashMap<String, String> datas = makePrompt(chatid, input);
-		
-		// 답변 생성
-		jr = openAIRequest.chatBot(input, datas);
-		ChatDTO chatDTO = openAIRequest.makeChat(jr, input);
-		
-		// log 저장
-		int cResult = chatDAO.insertChatLog(chatDTO);
-		if (cResult == 0) {
-			return "대화내용이 저장되지 않았습니다. DB error";
-		}
-
-		// total token 계산
-		int totalTokens = chatDAO.calculateTotalTokens(chatid);
-
-		if (totalTokens > Constants.RECORD_TOKEN_LIMIT) {
-			// summary 생성
-			String prompt = datas.get("prompt") + chatDTO.getResponse() + "\\n위의 대화내용 요약";
-			jr = openAIRequest.generateSummary(chatid, prompt);
-			HistoryDTO historyDTO = openAIRequest.makeHistory(jr, chatid);
-			// 대화 내용 저장
-			int hResult = historyDAO.insertHistory(historyDTO, chatid);
-			if (hResult == 0) {
-				return "대화요약이 저장되지 않았습니다. DB error";
-			}
-		}
-
-		return chatDTO.getResponse();
+	public int insertChat(String userid, boolean memory, boolean cache) {
+		return chatDAO.insertChat(makeChat(userid, memory, cache));
+	}
+	
+	public List<ChatDTO> getAllChats(String userid) {
+		return chatDAO.selectAll(userid);
+	}
+	
+	public List<LogDTO> getLogByChatid(int chatid) {
+		return chatLogDAO.selectAllByChatID(chatid);
+	}
+	
+	public int deleteChat(int chatid) {
+		return chatDAO.deleteChat(chatid);
 	}
 
-	// ************************************************************************************************
-	public void checkSameContents(int chatid, String input) {
-		List<LogDTO> logList = chatDAO.selectAllByChatID(chatid);
-		List<LogDTO> tmp = logList.stream().filter(log -> log.getRequest().equals("안녕")).toList();
-		System.out.println(tmp);
+	public ChatDTO makeChat(String userid, boolean memory, boolean cache) {
+		ChatDTO chat = new ChatDTO();
+		chat.setUser_id(userid);
+		chat.setMemory_enabled(memory);
+		chat.setCeche_enabled(cache);
+		return chat;
 	}
 
-	public HashMap<String, String> makePrompt(int chatid, String input) {
-		HashMap<String, String> datas = new HashMap<String, String>();
-		
-		// summary 조회
-		String summarys = "previous contents: ";
-		for (String summery : historyDAO.selectByChatID(chatid)) {
-			summarys += summery;
-		}
-		datas.put("summarys", summarys);
-
-		// log 조회
-		String prompt = "";
-		for (LogDTO log : chatDAO.selectByChatIDisNull(chatid)) {
-			prompt += "\\nuser: " + log.getRequest() + "\\nassistant: " + log.getResponse();
-		}
-		prompt += "\\nuser: " + input + "\\nassistant: ";
-		datas.put("prompt", prompt);
-		
-		System.out.println(prompt);
-		return datas;
-	}
-
-	public List<LogDTO> getChatLogs(int chatid) {
-		return chatDAO.selectTopNByChatID(chatid, Constants.BEFORE_LOGS);
-	}
 }
