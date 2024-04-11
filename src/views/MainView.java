@@ -10,7 +10,7 @@ import DTO.ModelDTO;
 public class MainView {
 
 	public static void printMenus(String title, String[] contents, char borderChar) {
-		final int boxWidth = 50;
+		final int boxWidth = 108;
 
         System.out.println();
 		printBorder(borderChar, boxWidth);
@@ -46,16 +46,19 @@ public class MainView {
 	    String header = String.format("| %-7s | %-20s | %-20s | %-14s | %-14s | %-14s |",
 	            "Chat ID", "Name", "Model", "Stream Enabled", "Memory Enabled", "Cache Enabled");
 	    String line = "+---------+----------------------+----------------------+----------------+----------------+----------------+";
-	    
+
 	    System.out.println(line);
 	    System.out.println(header);
 	    System.out.println(line);
-	    
+
 	    for (ChatDTO dto : dtos) {
+	        String name = trimAndAppendEllipsis(dto.getName() == null ? "null" : dto.getName(), 20);
+	        String model = trimAndAppendEllipsis(dto.getModel() == null ? "null" : dto.getModel(), 20);
+
 	        String row = String.format("| %-7d | %-20s | %-20s | %-14b | %-14b | %-14b |",
 	                dto.getChat_id(), 
-	                dto.getName() == null ? "null" : dto.getName(),
-	                dto.getModel() == null ? "null" : dto.getModel(),
+	                name,
+	                model,
 	                dto.isStream_enabled(), 
 	                dto.isMemory_enabled(), 
 	                dto.isCeche_enabled());

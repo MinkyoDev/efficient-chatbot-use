@@ -12,7 +12,7 @@ public class InputUtil {
 			System.out.println(message);
 		}
 		
-		System.out.print("입력>> ");
+		System.out.print("입력> ");
 		try {
 			intInput = Integer.parseInt(sc.nextLine());
 			
@@ -28,9 +28,9 @@ public class InputUtil {
 		}
 		
 		if (str != null) {
-			System.out.printf("%s>> ", str);
+			System.out.printf("%s> ", str);
 		}else {
-			System.out.print("입력>> ");
+			System.out.print("입력> ");
 		}
 		return sc.nextLine();
 	}

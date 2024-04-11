@@ -1,17 +1,12 @@
 package utils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +47,7 @@ public class OpenAIRequest {
 
     public JSONObject chatBot(String modelName, String prompt) {
         String jsonInputString = String.format(
-                "{\"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}], \"max_tokens\": 400, \"temperature\": 0.7}",
+                "{\"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}], \"max_tokens\": 500, \"temperature\": 0.7}",
                 modelName, prompt);
         try {
             String response = sendHttpRequest(jsonInputString, OPENAI_URL);
@@ -114,53 +109,6 @@ public class OpenAIRequest {
         return null;
     }
 
-//	public static void chatBot() {
-//		try {
-//			URL url = new URL("https://api.openai.com/v1/chat/completions");
-//			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//			connection.setRequestMethod("POST");
-//			connection.setRequestProperty("Content-Type", "application/json");
-//			connection.setRequestProperty("Authorization", "Bearer " + DotEnv.getEnv("OPENAI_KEY"));
-//			connection.setDoOutput(true);
-//
-//			String jsonInputString = String.format(
-//					"{" + "\"model\": \"%s\"," + "\"messages\": ["
-//							+ "  {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},"
-//							+ "  {\"role\": \"user\", \"content\": \"%s\"}],\"stream\": true}",
-//					"gpt-4", "안녕");
-//
-//			try (OutputStream os = connection.getOutputStream()) {
-//				byte[] input = jsonInputString.getBytes("utf-8");
-//				os.write(input, 0, input.length);
-//			}
-//
-//			try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
-//				String responseLine;
-//				JSONObject jsonObject = null;
-//				while ((responseLine = br.readLine()) != null) {
-//					if (responseLine.startsWith("data: ")) {
-//						String jsonData = responseLine.substring(6);
-//						try {
-//							jsonObject = new JSONObject(jsonData);
-//							String contents = jsonObject.getJSONArray("choices").getJSONObject(0).getJSONObject("delta")
-//									.getString("content");
-//							System.out.print(contents);
-//						} catch (Exception e) {
-//						}
-//					}
-//				}
-//				System.out.println();
-//				System.out.println(jsonObject);
-//			}
-//
-//			connection.disconnect();
-//		} catch (
-//
-//		Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
 	public ChatLogDTO makeChat(int chatid, String modelName, String input, JSONObject jr) {
 		ChatLogDTO chatDTO = new ChatLogDTO();
 		try {
@@ -179,16 +127,12 @@ public class OpenAIRequest {
 	
 	public ChatLogDTO makeChat(int chatid, String modelName, String input, String contents) {
 		ChatLogDTO chatDTO = new ChatLogDTO();
-		try {
-			chatDTO.setChat_id(chatid);
-			chatDTO.setModel_name(modelName);
-			chatDTO.setRequest(input);
-			chatDTO.setResponse(contents);
-			chatDTO.setPrompt_tokens(0);
-			chatDTO.setCompletion_tokens(0);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		chatDTO.setChat_id(chatid);
+		chatDTO.setModel_name(modelName);
+		chatDTO.setRequest(input);
+		chatDTO.setResponse(contents);
+		chatDTO.setPrompt_tokens(0);
+		chatDTO.setCompletion_tokens(0);
 		return chatDTO;
 	}
 

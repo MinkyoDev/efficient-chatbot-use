@@ -3,6 +3,7 @@ package services;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import DAO.ChatDAO;
@@ -49,7 +50,12 @@ public class ChatService {
 	public void makeName(int chatid, HashMap<String, String> datas) {
 		String prompt = datas.get("prompt") + datas.get("contents") + "\\nMake the title of the above conversation in English in one sentence or less";
 		jr = openAIRequest.chatBot(Constants.MODEL_NAME_FOR_SUMMARY, prompt);
-		String name = jr.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+		String name = null;
+		try {
+			name = jr.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		chatDAO.updateName(chatid, name);
 	}
 

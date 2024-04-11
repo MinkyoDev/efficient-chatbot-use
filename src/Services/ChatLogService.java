@@ -43,7 +43,7 @@ public class ChatLogService {
 		if (chat.isMemory_enabled()) {
 			prompt = makePrompt(chatid, input);
 		}
-
+		
 		// 답변 생성
 		ChatLogDTO chatDTO = null;
 		if (chat.isStream_enabled()) {
@@ -71,7 +71,7 @@ public class ChatLogService {
 
 			if (totalTokens > Constants.RECORD_TOKEN_LIMIT) {
 				// summary 생성
-				String contents = prompt + chatDTO.getResponse() + "\\n위의 대화내용 단답형으로 요약";
+				String contents = prompt + chatDTO.getResponse() + "/위의 대화내용 단답형으로 요약";
 				jr = openAIRequest.chatBot(Constants.MODEL_NAME_FOR_SUMMARY, contents);
 				HistoryDTO historyDTO = openAIRequest.makeHistory(jr, chatid);
 				// 대화 내용 저장
@@ -100,11 +100,12 @@ public class ChatLogService {
 		// log 조회
 		String prompt = "";
 		for (LogDTO log : chatLogDAO.selectByChatIDisNull(chatid)) {
-			prompt += "\\nuser: " + log.getRequest() + "\\nassistant: " + log.getResponse();
+			prompt += "/user: " + log.getRequest() + "/assistant: " + log.getResponse();
 		}
-		prompt += "\\nuser: " + input + "\\nassistant: ";
+		prompt += "/user: " + input + "/assistant: ";
 
-		return summarys + "\\n" + prompt;
+		String result = summarys + "/" + prompt;
+		return result.replace("\n", " ");
 	}
 
 	public List<LogDTO> getChatLogs(int chatid) {

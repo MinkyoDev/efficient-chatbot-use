@@ -47,7 +47,6 @@ public class ChatController {
 			}
 			System.out.print("GPT> ");
 			datas = chatLogService.getChatbotResponse(chatid, chat, input);
-			System.out.println(datas);
 			if (datas.get("contents") != null) {
 				System.out.println(datas.get("contents"));
 			}
