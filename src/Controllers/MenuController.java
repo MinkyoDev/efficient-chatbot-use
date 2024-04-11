@@ -1,43 +1,42 @@
 package controllers;
 
-import java.util.Scanner;
+import java.util.List;
 
+import DTO.ChatDTO;
+import DTO.ModelDTO;
 import DTO.UserDTO;
 import services.ChatService;
+import services.ModelService;
 import services.UserService;
+import utils.InputUtil;
+import views.MainView;
 
 public class MenuController {
 
-	static Scanner sc = new Scanner(System.in);
 	static UserService userService = new UserService();
 	static ChatService chatService = new ChatService();
+	static ModelService modelService = new ModelService();
 
 	public static void menuController(UserDTO user) {
 		boolean isStop = false;
 		while (!isStop) {
-			System.out.println();
-			System.out.println("============================");
-			System.out.println("Menu");
-			System.out.println("============================");
-			System.out.println("1.새채팅");
-			System.out.println("2.이어하기");
-			System.out.println("3.채팅관리");
-			System.out.println("4.정보수정");
-			System.out.println("5.로그아웃");
-			System.out.print("입력>> ");
-			int job = Integer.parseInt(sc.nextLine());
+			String[] contents = { "새채팅", "이어하기", "채팅관리", "정보수정", "로그아웃" };
+			MainView.printMenus("Menu", contents, '=');
+
+			int job = InputUtil.inputInt(null);
 
 			switch (job) {
 			case 1 -> {
 				makeNewChat(user);
 			}
 			case 2 -> {
+				continueChat(user);
 			}
 			case 3 -> {
 				ManageController.manageChat(user);
 			}
 			case 4 -> {
-				int result = updateUser(user);
+				int result = UserUpdateController.updateUser(user);
 				if (result == 1) {
 					return;
 				}
@@ -54,75 +53,54 @@ public class MenuController {
 	}
 
 	private static void makeNewChat(UserDTO user) {
-		System.out.println();
-		System.out.println("============================");
-		System.out.println("New Chat");
-		System.out.println("============================");
+		boolean stream = false, memory = true, cache = true;
+		String modelName = "gpt-3.5-turbo-1106";
+		MainView.printMenus("New Chat", null, '-');
 
-		boolean memory = true;
-		boolean cache = true;
-		System.out.print("memory 기능을 사용하시겠습니까? defalut: true (y/n)>> ");
-		String useMemory = sc.nextLine();
+		List<ModelDTO> modelList = modelService.getAllModels();
+		MainView.printModelDTOs(modelList);
+		int modelNo = InputUtil.inputInt("사용하실 모델을 골라주세요. [defalut: gpt-3.5-turbo-1106]");
+		if (modelNo != 0) {
+			modelName = modelList.get(modelNo - 1).getName();
+		}
+
+		String useStream = InputUtil.inputString("stream 기능을 사용하시겠습니까? [defalut: false] (y/n)", null);
+		if (useStream.toLowerCase().equals("y")) {
+			stream = true;
+			cache = false;
+			System.out.println("stream 기능을 사용하시면 summary와 cache 기능을 사용하실 수 없습니다.");
+		} else {
+			String useCache = InputUtil.inputString("cache 기능을 사용하시겠습니까? [defalut: true] (y/n)", null);
+			if (useCache.toLowerCase().equals("n")) {
+				cache = false;
+			}
+		}
+		String useMemory = InputUtil.inputString("memory 기능을 사용하시겠습니까? [defalut: true] (y/n)", null);
 		if (useMemory.toLowerCase().equals("n")) {
 			memory = false;
 		}
-		System.out.print("cache 기능을 사용하시겠습니까? defalut: true (y/n)>> ");
-		String useCache = sc.nextLine();
-		if (useCache.toLowerCase().equals("n")) {
-			cache = false;
-		}
-		int result = chatService.insertChat(user.getId(), memory, cache);
-		if (result == 0) {
+		int chatid = chatService.insertChat(user.getId(), modelName, stream, memory, cache);
+		if (chatid == 0) {
 			System.out.println("새로운 채팅방이 생성되지 않았습니다. DB error");
 		}
-		ChatController.chatController(result);
+		ChatController.chatController(chatid);
 	}
 
-	public static int updateUser(UserDTO user) {
-		boolean isStop = false;
-		while (!isStop) {
-			System.out.println();
-			System.out.println("============================");
-			System.out.println("Update");
-			System.out.println("============================");
-			System.out.println("1.password 변경");
-			System.out.println("2.탈퇴하기");
-			System.out.println("3.돌아가기");
-			System.out.print("입력>> ");
-			int job = Integer.parseInt(sc.nextLine());
-
-			switch (job) {
-			case 1 -> {
-				System.out.print("새로운 비밀번호를 입력해 주세요.>> ");
-				String newPassword = sc.nextLine();
-				String result = userService.updatePassword(user.getId(), newPassword);
-				System.out.println(result);
-			}
-			case 2 -> {
-				System.out.print("정말 탈퇴하시겠습니까? (y/n)>> ");
-				String select = sc.nextLine();
-				if (select.toLowerCase().equals("y")) {
-					int result = userService.deleteByID(user.getId());
-					if (result == 1) {
-						System.out.println("성공적으로 탈퇴되었습니다.");
-						return result;
-					}
-					System.out.println("탈퇴에 실패하였습니다.");
-					return 0;
-				} else {
-					System.out.println("취소되었습니다.");
-				}
-			}
-			case 3 -> {
-				isStop = true;
-				System.out.println("메뉴로 돌아갑니다.");
-			}
-			default -> {
-				System.out.println("다시 입력해주세요.");
-			}
-			}
+	private static void continueChat(UserDTO user) {
+		MainView.printMenus("Continue", null, '-');
+		List<ChatDTO> chatList = chatService.getAllChats(user.getId());
+		if (chatList.size() == 0) {
+			System.out.println("채팅방이 없습니다.");
+			return;
 		}
-		return 0;
+		MainView.printChatDTOs(chatList);
+
+		int chatid = InputUtil.inputInt("채팅방을 선택헤 주세요.");
+		if (chatid == 0) {
+			System.out.println("숫자를 입력해 주세요.");
+			return;
+		}
+		ChatController.chatController(chatid);
 	}
 
 }

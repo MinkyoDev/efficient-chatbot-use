@@ -4,7 +4,9 @@ public class ChatDTO {
 
 	private int chat_id;
 	private String user_id;
+	private String model;
 	private String name;
+	private boolean stream_enabled;
 	private boolean memory_enabled;
 	private boolean ceche_enabled;
 
@@ -24,12 +26,28 @@ public class ChatDTO {
 		this.user_id = user_id;
 	}
 
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isStream_enabled() {
+		return stream_enabled;
+	}
+
+	public void setStream_enabled(boolean stream_enabled) {
+		this.stream_enabled = stream_enabled;
 	}
 
 	public boolean isMemory_enabled() {
@@ -50,8 +68,9 @@ public class ChatDTO {
 
 	@Override
 	public String toString() {
-		return "ChatDTO [chat_id=" + chat_id + ", user_id=" + user_id + ", name=" + name + ", memory_enabled="
-				+ memory_enabled + ", ceche_enabled=" + ceche_enabled + "]";
+		return "ChatDTO [chat_id=" + chat_id + ", user_id=" + user_id + ", model=" + model + ", name=" + name
+				+ ", stream_enabled=" + stream_enabled + ", memory_enabled=" + memory_enabled + ", ceche_enabled="
+				+ ceche_enabled + "]";
 	}
 
 }

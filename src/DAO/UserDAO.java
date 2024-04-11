@@ -18,6 +18,7 @@ public class UserDAO {
 	PreparedStatement pst;
 	ResultSet rs;
 	
+	// insert
 	public int insertUser(UserDTO user) {
 		int result = 0;
 		String sql = "insert into users (id, password, is_active) values (?, ?, ?)";
@@ -36,6 +37,7 @@ public class UserDAO {
 		return result;
 	}
 	
+	// update
 	public int updateUser(UserDTO user) {
 		int result = 0;
 		String sql = "update users set password = ?, is_active = 1 where id = ?";
@@ -53,6 +55,7 @@ public class UserDAO {
 		return result;
 	}
 	
+	// select
 	public List<UserDTO> selectAllByID(String id) {
 		List<UserDTO> userlist = new ArrayList<>();
 		String sql = "select * from users where id = ?";
@@ -94,6 +97,7 @@ public class UserDAO {
 		return userlist;
 	}
 	
+	// delete
 	public int deleteByID(String id) {
 		int result = 0;
 		String sql = "update users set is_active = 0 where id = ?";

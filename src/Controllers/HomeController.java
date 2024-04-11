@@ -1,27 +1,20 @@
 package controllers;
 
-import java.util.Scanner;
-
 import DTO.UserDTO;
 import services.UserService;
+import utils.InputUtil;
+import views.MainView;
 
 public class HomeController {
 	
-	static Scanner sc = new Scanner(System.in);
 	static UserService userService = new UserService();
 
 	public static void homeConroller() {
 		boolean isStop = false;
 		while (!isStop) {
-			System.out.println();
-			System.out.println("============================");
-			System.out.println("Home");
-			System.out.println("============================");
-			System.out.println("1.로그인");
-			System.out.println("2.등록");
-			System.out.println("3.종료");
-			System.out.print("입력>> ");
-			int job = Integer.parseInt(sc.nextLine());
+			String[] contents = {"로그인", "등록", "종료"};
+			MainView.printMenus("Home", contents, '=');
+			int job = InputUtil.inputInt(null);
 			
 			switch (job) {
 			case 1 -> {
@@ -37,19 +30,18 @@ public class HomeController {
 				isStop = true;
 				System.out.println("프로그램을 종료합니다.");
 			}
+			default -> {
+				System.out.println("다시 입력해주세요.");
+			}
 			}
 		}
 	}
 	
 	private static UserDTO logInController() {
-		System.out.println();
-		System.out.println("============================");
-		System.out.println("Login");
-		System.out.println("============================");
-		System.out.print("id>> ");
-		String id = sc.nextLine();
-		System.out.print("password>> ");
-		String password = sc.nextLine();
+		MainView.printMenus("Login", null, '-');
+		String id = InputUtil.inputString(null, "id");
+		String password = InputUtil.inputString(null, "password");
+		
 		UserDTO user = userService.logIn(id, password);
 		if (user == null) {
 			System.out.println("id 또는 password가 잘못되었습니다.");
@@ -60,14 +52,10 @@ public class HomeController {
 	}
 
 	public static void registController() {
-		System.out.println();
-		System.out.println("============================");
-		System.out.println("Registration");
-		System.out.println("============================");
-		System.out.print("id>> ");
-		String id = sc.nextLine();
-		System.out.print("password>> ");
-		String password = sc.nextLine();
+		MainView.printMenus("Registration", null, '-');
+		String id = InputUtil.inputString(null, "id");
+		String password = InputUtil.inputString(null, "password");
+		
 		String result = userService.registration(id, password);
 		System.out.println(result);
 	}

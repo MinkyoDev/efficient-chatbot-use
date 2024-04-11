@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.HistoryDTO;
-import DTO.LogDTO;
 import utils.DBUtil;
 
 public class HistoryDAO {
@@ -21,8 +20,8 @@ public class HistoryDAO {
 	
 	public int insertHistory(HistoryDTO history, int chatid) {
 		int result = 0;
-		String sql ="insert into history (history_id, chat_id, deps, is_full, summary, prompt_tokens, completion_tokens) "
-				+ "values (hisid_seq.nextVal, ?, 0, 0, ?, ?, ?)";
+		String sql ="insert into history (history_id, chat_id, deps, summary, prompt_tokens, completion_tokens) "
+				+ "values (hisid_seq.nextVal, ?, 0, ?, ?, ?)";
 		conn = DBUtil.dbConnection();		
 		try {
 			conn.setAutoCommit(false);
@@ -33,7 +32,6 @@ public class HistoryDAO {
 			pst.setInt(4, history.getCompletion_tokens());
 			result = pst.executeUpdate();
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} finally {
 			DBUtil.dbDisconnect(conn, pst, rs);

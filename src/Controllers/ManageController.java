@@ -1,32 +1,25 @@
 package controllers;
 
 import java.util.List;
-import java.util.Scanner;
 
 import DTO.ChatDTO;
 import DTO.LogDTO;
 import DTO.UserDTO;
 import services.ChatService;
+import utils.InputUtil;
+import views.MainView;
 
 public class ManageController {
-	
-	static Scanner sc = new Scanner(System.in);
+
 	static ChatService chatService = new ChatService();
 
 	public static void manageChat(UserDTO user) {
 		boolean isStop = false;
 		while (!isStop) {
-			System.out.println();
-			System.out.println("============================");
-			System.out.println("Management");
-			System.out.println("============================");
-			System.out.println("1.채팅방 조회하기");
-			System.out.println("2.채팅방 내용보기");
-			System.out.println("3.채팅방 삭제하기");
-			System.out.println("4.돌아가기");
-			System.out.print("입력>> ");
-			int job = Integer.parseInt(sc.nextLine());
-			
+			String[] contents = { "채팅방 조회하기", "채팅방 내용보기", "채팅방 삭제하기", "돌아가기" };
+			MainView.printMenus("Management", contents, '=');
+			int job = InputUtil.inputInt(null);
+
 			switch (job) {
 			case 1 -> {
 				fetchChat(user);
@@ -46,48 +39,40 @@ public class ManageController {
 			}
 			}
 		}
-		
-	}
 
-	private static void deleteChat(UserDTO user) {
-		System.out.println();
-		System.out.println("============================");
-		System.out.println("Delete Chat");
-		System.out.println("============================");
-		System.out.println("삭제할 채팅방을 선택헤 주세요.");
-		System.out.print("입력>> ");
-		int chatID = Integer.parseInt(sc.nextLine());
-		int result = chatService.deleteChat(chatID);
-		if (result == 0) {
-			System.out.println("채팅방이 삭제되지 않았습니다. DB error");
-		}
-		System.out.println("채팅방이 성공적으로 삭제되었습니다.");
-	}
-
-	private static void fetchChatLog(UserDTO user) {
-		System.out.println();
-		System.out.println("============================");
-		System.out.println("Fetch Chat log");
-		System.out.println("============================");
-		System.out.println("조회할 채팅방을 선택해 주세요.");
-		System.out.print("입력>> ");
-		int chatID = Integer.parseInt(sc.nextLine());
-		
-		List<LogDTO> logList = chatService.getLogByChatid(chatID);
-		for (LogDTO log : logList) {
-			System.out.println(log);
-		}
-		
 	}
 
 	private static void fetchChat(UserDTO user) {
-		System.out.println();
-		System.out.println("============================");
-		System.out.println("Fetch Chat");
-		System.out.println("============================");
+		MainView.printMenus("Fetch Chat", null, '-');
 		List<ChatDTO> chatList = chatService.getAllChats(user.getId());
-		for (ChatDTO chat : chatList) {
-			System.out.println(chat);
+		if (chatList.size() == 0) {
+			System.out.println("만들어진 채팅방이 없습니다.");
+			return;
+		}
+		MainView.printChatDTOs(chatList);
+	}
+
+	private static void fetchChatLog(UserDTO user) {
+		MainView.printMenus("Fetch Chat log", null, '-');
+		int chatID = InputUtil.inputInt("조회할 채팅방을 선택해 주세요.");
+		List<LogDTO> logList = chatService.getLogByChatid(user.getId(), chatID);
+		if (logList.size() == 0) {
+			System.out.println("채팅 내역이 없습니다.");
+			return;
+		}
+		MainView.printLogDTOs(logList);
+
+	}
+
+	private static void deleteChat(UserDTO user) {
+		MainView.printMenus("Delete Chat", null, '-');
+		int chatID = InputUtil.inputInt("삭제할 채팅방을 선택헤 주세요.");
+		int result = chatService.deleteChat(user.getId(), chatID);
+		if (result == 0) {
+			System.out.println("해당 채팅방은 존재하지 않습니다.");
+		}else {
+			System.out.println("채팅방이 성공적으로 삭제되었습니다.");
 		}
 	}
+
 }

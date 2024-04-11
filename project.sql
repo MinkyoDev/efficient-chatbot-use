@@ -5,12 +5,43 @@ CREATE TABLE Chat_log (
 	log_id	number		NOT NULL,
 	chat_id	number		NOT NULL,
 	history_id	number		NULL,
-	model_name	varChar(200)		NOT NULL,
 	request	varChar2(4000)		NULL,
 	response	varChar2(4000)		NULL,
 	prompt_tokens	number		NOT NULL,
 	completion_tokens	number		NOT NULL,
 	create_at	timestamp	DEFAULT systimestamp	NOT NULL
+);
+
+
+DROP TABLE History;
+
+CREATE TABLE History (
+	history_id	number		NOT NULL,
+	chat_id	number		NOT NULL,
+	deps	number	DEFAULT 0	NOT NULL,
+	summary	varChar2(4000)		NULL,
+	prompt_tokens	number		NOT NULL,
+	completion_tokens	number		NOT NULL
+);
+
+DROP TABLE Chat;
+
+CREATE TABLE Chat (
+	chat_id	number		NOT NULL,
+	user_id	varChar2(100)		NOT NULL,
+	model	varChar(200)		NOT NULL,
+	name	varChar2(500)		NULL,
+	stream_enabled	char(1)	DEFAULT 0	NOT NULL,
+	memory_enabled	char(1)	DEFAULT 1	NOT NULL,
+	ceche_enabled	char(1)	DEFAULT 1	NOT NULL
+);
+
+DROP TABLE Users;
+
+CREATE TABLE Users (
+	id	varChar2(100)		NOT NULL,
+	password	varChar2(100)		NOT NULL,
+	is_active	char(1)	DEFAULT 1	NOT NULL
 );
 
 DROP TABLE Models;
@@ -22,55 +53,38 @@ CREATE TABLE Models (
 	price_per_ctoken	number		NOT NULL
 );
 
-DROP TABLE History;
-
-CREATE TABLE History (
-	history_id	number		NOT NULL,
-	chat_id	number		NOT NULL,
-	deps	number	DEFAULT 0	NOT NULL,
-	is_full	char(1)	DEFAULT 0	NOT NULL,
-	summary	varChar2(4000)		NULL,
-	prompt_tokens	number		NOT NULL,
-	completion_tokens	number		NOT NULL,
-	parants_his	number		NULL
-);
-
-DROP TABLE Chat;
-
-CREATE TABLE Chat (
-	chat_id	number		NOT NULL,
-	user_id	varChar2(100)		NOT NULL,
-	name	varChar2(500)		NULL,
-	memory_enabled	char(1)	DEFAULT 1	NOT NULL,
-	ceche_enabled	char(1)		NOT NULL
-);
-
-DROP TABLE Users;
-
-CREATE TABLE Users (
-	id	varChar2(100)		NOT NULL,
-	password	varChar2(100)		NOT NULL,
-	is_active	char(1)	DEFAULT 1	NOT NULL
-);
-
-ALTER TABLE Chat_log ADD CONSTRAINT PK_CHAT_LOG PRIMARY KEY (
-	log_id
-);
-
-ALTER TABLE Models ADD CONSTRAINT PK_MODELS PRIMARY KEY (
-	name
-);
-
-ALTER TABLE History ADD CONSTRAINT PK_HISTORY PRIMARY KEY (
-	history_id
-);
-
 ALTER TABLE Chat ADD CONSTRAINT PK_CHAT PRIMARY KEY (
 	chat_id
 );
 
 ALTER TABLE Users ADD CONSTRAINT PK_USERS PRIMARY KEY (
 	id
+);
+
+ALTER TABLE Models ADD CONSTRAINT PK_MODELS PRIMARY KEY (
+	name
+);
+
+ALTER TABLE Chat_log ADD CONSTRAINT PK_CHAT_LOG PRIMARY KEY (
+	log_id
+);
+
+ALTER TABLE History ADD CONSTRAINT PK_HISTORY PRIMARY KEY (
+	history_id
+);
+
+ALTER TABLE Chat ADD CONSTRAINT FK_Users_TO_Chat_1 FOREIGN KEY (
+	user_id
+)
+REFERENCES Users (
+	id
+);
+
+ALTER TABLE Chat ADD CONSTRAINT FK_Models_TO_Chat_1 FOREIGN KEY (
+	model
+)
+REFERENCES Models (
+	name
 );
 
 ALTER TABLE Chat_log ADD CONSTRAINT FK_Chat_TO_Chat_log_1 FOREIGN KEY (
@@ -87,32 +101,11 @@ REFERENCES History (
 	history_id
 );
 
-ALTER TABLE Chat_log ADD CONSTRAINT FK_Models_TO_Chat_log_1 FOREIGN KEY (
-	model_name
-)
-REFERENCES Models (
-	name
-);
-
 ALTER TABLE History ADD CONSTRAINT FK_Chat_TO_History_1 FOREIGN KEY (
 	chat_id
 )
 REFERENCES Chat (
 	chat_id
-);
-
-ALTER TABLE History ADD CONSTRAINT FK_History_TO_History_1 FOREIGN KEY (
-	parants_his
-)
-REFERENCES History (
-	history_id
-);
-
-ALTER TABLE Chat ADD CONSTRAINT FK_Users_TO_Chat_1 FOREIGN KEY (
-	user_id
-)
-REFERENCES Users (
-	id
 );
 
 
@@ -151,7 +144,7 @@ CREATE SEQUENCE logid_seq
 create or replace trigger if_insert_history
 after insert on history for each row
 begin
-    update chat_log set history_id = :new.history_id where history_id is null;
+    update chat_log set history_id = :new.history_id where history_id is null and chat_id = :new.chat_id;
 end;
 /
 
@@ -170,24 +163,32 @@ END;
 
 -- 데이터 넣기
 insert into models values ('gpt-3.5-turbo-1106', 'openAI', 0.0010/1000, 0.0020/1000);
-insert into models values ('gpt-3.5-turbo-instruct', 'openAI', 0.0015/1000, 0.0020/1000);
 insert into models values ('gpt-4', 'openAI', 0.03/1000, 0.06/1000);
 insert into models values ('gpt-4-1106-preview', 'openAI', 0.01/1000, 0.03/1000);
 commit;
 
-insert into users (id, password) values ('22', '2222');
+insert into users (id, password) values ('11', '1111');
 commit;
 
-insert into chat (chat_id, user_id, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, '22', 1, 1);
-commit;
+--insert into chat (chat_id, user_id, model, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, '11', 'gpt-3.5-turbo-1106', 1, 1);
+--rollback;
+--commit;
 
 --insert into chat_log (log_id, chat_id, model_name, request, response, prompt_tokens, completion_tokens) values (logid_seq.nextVal, 1, 'gpt-3.5-turbo-1106', '안녕', '안녕하세요! 무엇을 도와드릴까요?',10, 10);
 
 --insert into history (history_id, chat_id, deps, is_full, summary, prompt_tokens, completion_tokens) values (hisid_seq.nextVal, 1, 0, 0, '', 10, 10);
 --rollback;
 
-delete from chat where chat_id = 1;
---select * from chat where user_id = '22';
+--select *, (select count(*) from chat_log where chat_id = 1) as cnt from chat where chat_id = 1;
+--SELECT *, (SELECT COUNT(*) FROM chat_log WHERE chat_id = 1) AS chat_log_count FROM chat WHERE chat_id = 1;
+--
+--select * from chat_log join chat using(chat_id) where chat_id = 1;
+--select count(*) from chat_log where chat_id = 1;
+--select * from(select * from chat_log where chat_id = 5 order by create_at desc) logs where rownum<=3 order by logs.create_at asc;
+--select * from chat_log where chat_id = 2 and request = '안녕';
+--select * from models;
+--delete from chat where chat_id = 1;
+--select * from chat where user_id = '11';
 --select * from chat_log where chat_id = 1;
 --select * from chat;
 --update users set is_active = 1 where id = '22';

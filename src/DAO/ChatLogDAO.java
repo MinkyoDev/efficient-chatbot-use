@@ -10,6 +10,7 @@ import java.util.List;
 
 import DTO.ChatLogDTO;
 import DTO.LogDTO;
+import DTO.UserDTO;
 import utils.DBUtil;
 
 public class ChatLogDAO {
@@ -22,9 +23,9 @@ public class ChatLogDAO {
 	// insert
 	public int insertChatLog(ChatLogDTO chat) {
 		int result = 0;
-		String sql = "insert into chat_log (log_id, chat_id, model_name, request, response, prompt_tokens, completion_tokens) "
-				+ "values (chatid_seq.nextVal, ?, 'gpt-3.5-turbo-1106', ?, ?, ?, ?)";
-		conn = DBUtil.dbConnection();		
+		String sql = "insert into chat_log (log_id, chat_id, request, response, prompt_tokens, completion_tokens) "
+				+ "values (logid_seq.nextVal, ?, ?, ?, ?, ?)";
+		conn = DBUtil.dbConnection();
 		try {
 			conn.setAutoCommit(false);
 			pst = conn.prepareStatement(sql);
@@ -41,19 +42,20 @@ public class ChatLogDAO {
 		}
 		return result;
 	}
-	
+
 	// select
-	public List<LogDTO> selectAllByChatID(int chatid) {
+	public List<LogDTO> selectAllByChatIDUserID(String userid, int chatid) {
 		List<LogDTO> loglist = new ArrayList<>();
-		String sql = "select * from chat_log join Chat using (chat_id) where chat_id = ?";
+		String sql = "select * from chat_log join Chat using (chat_id) where chat_id = ? and user_id = ?";
 		conn = DBUtil.dbConnection();
 		try {
 			conn.setAutoCommit(false);
 			pst = conn.prepareStatement(sql);
 			pst.setInt(1, chatid);
+			pst.setString(2, userid);
 			rs = pst.executeQuery();
 			while (rs.next()) {
-				LogDTO log = makeLogPrint(rs);
+				LogDTO log = makeLog(rs);
 				loglist.add(log);
 			}
 		} catch (SQLException e) {
@@ -63,7 +65,7 @@ public class ChatLogDAO {
 		}
 		return loglist;
 	}
-	
+
 	public List<LogDTO> selectByChatIDisNull(int chatid) {
 		List<LogDTO> loglist = new ArrayList<>();
 		String sql = "select * from chat_log join Chat using (chat_id) where chat_id = ? and history_id is null order by create_at";
@@ -74,7 +76,7 @@ public class ChatLogDAO {
 			pst.setInt(1, chatid);
 			rs = pst.executeQuery();
 			while (rs.next()) {
-				LogDTO log = makeLogPrint(rs);
+				LogDTO log = makeLog(rs);
 				loglist.add(log);
 			}
 		} catch (SQLException e) {
@@ -84,11 +86,10 @@ public class ChatLogDAO {
 		}
 		return loglist;
 	}
-	
+
 	public List<LogDTO> selectTopNByChatID(int chatid, int N) {
 		List<LogDTO> loglist = new ArrayList<>();
-		String sql = "select logs.user_id, logs.chat_id, logs.request, logs.response "
-				+ "from(select * from chat_log join Chat using (chat_id) where chat_id = ? order by create_at desc) logs where rownum<=? order by logs.create_at asc";
+		String sql = "select * from(select * from chat_log where chat_id = ? order by create_at desc) logs where rownum<=? order by logs.create_at asc";
 		conn = DBUtil.dbConnection();
 		try {
 			conn.setAutoCommit(false);
@@ -97,7 +98,7 @@ public class ChatLogDAO {
 			pst.setInt(2, N);
 			rs = pst.executeQuery();
 			while (rs.next()) {
-				LogDTO log = makeLogPrint(rs);
+				LogDTO log = makeLog(rs);
 				loglist.add(log);
 			}
 		} catch (SQLException e) {
@@ -107,7 +108,28 @@ public class ChatLogDAO {
 		}
 		return loglist;
 	}
-	
+
+	public LogDTO selectByRequest(int chatid, String input) {
+		LogDTO chat = null;
+		String sql = "select * from chat_log where chat_id = ? and request = ?";
+		conn = DBUtil.dbConnection();
+		try {
+			conn.setAutoCommit(false);
+			pst = conn.prepareStatement(sql);
+			pst.setInt(1, chatid);
+			pst.setString(2, input);
+			rs = pst.executeQuery();
+			if (rs.next()) {
+	            chat = makeLog(rs);
+	        } 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.dbDisconnect(conn, st, rs);
+		}
+		return chat;
+	}
+
 	// etc
 	public int calculateTotalTokens(int chatid) {
 		int totalTokens = 0;
@@ -128,12 +150,16 @@ public class ChatLogDAO {
 		return totalTokens;
 	}
 
-	private LogDTO makeLogPrint(ResultSet rs) throws SQLException {
+	private LogDTO makeLog(ResultSet rs) throws SQLException {
 		LogDTO log = new LogDTO();
+		log.setLog_id(rs.getInt("log_id"));
 		log.setChat_id(rs.getInt("chat_id"));
-		log.setUser_id(rs.getString("user_id"));
+		log.setHistory_id(rs.getInt("history_id"));
 		log.setRequest(rs.getString("request"));
 		log.setResponse(rs.getString("response"));
+		log.setPrompt_tokens(rs.getInt("prompt_tokens"));
+		log.setCompletion_tokens(rs.getInt("completion_tokens"));
 		return log;
 	}
+
 }
