@@ -3,7 +3,6 @@ package controllers;
 import java.util.HashMap;
 import java.util.List;
 
-import DAO.ChatDAO;
 import DTO.ChatDTO;
 import DTO.LogDTO;
 import services.ChatLogService;

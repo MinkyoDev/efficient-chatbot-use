@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import DAO.ChatDAO;
 import DAO.ChatLogDAO;
 import DAO.HistoryDAO;
 import DTO.ChatDTO;
@@ -66,7 +65,7 @@ public class ChatLogService {
 		}
 
 		// total token 계산
-		if (chat.isMemory_enabled()) {
+		if (chat.isMemory_enabled() && !chat.isStream_enabled()) {
 			int totalTokens = chatLogDAO.calculateTotalTokens(chatid);
 
 			if (totalTokens > Constants.RECORD_TOKEN_LIMIT) {
@@ -82,7 +81,6 @@ public class ChatLogService {
 				}
 			}
 		}
-
 		return map;
 	}
 

@@ -10,7 +10,6 @@ import java.util.List;
 
 import DTO.ChatLogDTO;
 import DTO.LogDTO;
-import DTO.UserDTO;
 import utils.DBUtil;
 
 public class ChatLogDAO {

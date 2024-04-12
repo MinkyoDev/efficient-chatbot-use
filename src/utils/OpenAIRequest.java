@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.http.HttpClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,8 +16,6 @@ public class OpenAIRequest {
 
 	private static final String OPENAI_URL = "https://api.openai.com/v1/chat/completions";
     
-	HttpClient client = HttpClient.newHttpClient();
-
     // 공통 HTTP 요청 메소드
     private static String sendHttpRequest(String jsonInputString, String urlString) throws Exception {
         URL url = new URL(urlString);

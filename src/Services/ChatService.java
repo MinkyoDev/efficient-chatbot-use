@@ -10,7 +10,6 @@ import DAO.ChatDAO;
 import DAO.ChatLogDAO;
 import DTO.ChatDTO;
 import DTO.LogDTO;
-import DTO.UserDTO;
 import utils.Constants;
 import utils.OpenAIRequest;
 
