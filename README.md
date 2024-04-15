@@ -132,8 +132,8 @@ prompt에 들어가는 log의 total token의 양이 일정 갯수를 넘어가�
         <tbody>
             <tr>
                 <td align="center"><b>Chat</b></td>
-                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/6ea8a136-aa04-4b79-b894-e539b52142d9" width="500"></td>
-                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/2b1d7407-5754-4151-958e-8d263ee9a98f" width="500"></td>
+                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/6ea8a136-aa04-4b79-b894-e539b52142d9"></td>
+                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/2b1d7407-5754-4151-958e-8d263ee9a98f"></td>
             </tr>
             <tr>
                 <td align="center"><b>name</b></td>
@@ -150,8 +150,8 @@ prompt에 들어가는 log의 total token의 양이 일정 갯수를 넘어가�
 <table>
         <tbody>
             <tr>
-                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/91dbffdd-dcfc-48d2-9901-7aa8002e5d3d" width="500"></td>
-                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/7d4dd992-5e4f-445d-886d-2b9de9df9a6b" width="500"></td>
+                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/383e76d5-eb5e-417e-b1cf-9d9c8e173e4e"></td>
+                <td align="center"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/976e997f-bb91-4115-a547-381919ed42b7"></td>
             </tr>
             <tr>
                 <td align="center">Stream off</td>
@@ -160,9 +160,36 @@ prompt에 들어가는 log의 total token의 양이 일정 갯수를 넘어가�
         </tbody>
     </table>
 
+빠른 답변 확인과 유저 경험을 개선하기 위한 Stream 기능을 추가하였다. 
+
+다만 Stream을 사용할 시 OpenAI api의 response에 usage tokens에 관한 정보를 주지 않기 때문에 토큰을 활용한 summary기능의 사용이 제한되었다.
+
+
 ## Service Logic
 <img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/9ef4113d-61de-4613-8fd5-82767e83e0c7" width="70%">
 
 ## ERD
 <img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/848e77b6-0a2c-43d0-b0c5-f9d9cd9982c5" width="70%">
 
+## 개선사항
+
+### 1. Cache 기능의 낮은 유연성
+
+현제 cache기능은 db에서 완벽하게 똑같은 질문이 있을시에 작동한다. 하지만 다른 질문이어도 의미가 같은 경우도 있고, 사용자의 오타같은 여러 요인에 대응할 수 있어야 실제 서비스에서 사용할만한 수준이 될 것이다.
+
+### 2. History deps 구현
+
+대화 log가 쌓였을 시 한번씩 Summary를 만들어 token사용량을 줄이고자 history를 만들었다. 하지만 대화가 길어져 summary가 많아진다면 같은 문제가 발생하게 된다. 따라서 history에 deps를 만들어 요약한 내용이 많아지면 또 요약해서 저장하는 식으로 로직을 개선하고자 한다.
+
+<table>
+        <tbody>
+            <tr>
+                <td align="center" width="50%"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/a081a17b-4b7f-4381-85fc-b7541a1fff3b"></td>
+                <td align="center" width="50%"><img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/0097ff94-2470-4526-bd61-227ef1e83b6d"></td>
+            </tr>
+            <tr>
+                <td align="center">Cache 기능의 낮은 유연성</td>
+                <td align="center">History deps 구현</td>
+            </tr>
+        </tbody>
+    </table>
