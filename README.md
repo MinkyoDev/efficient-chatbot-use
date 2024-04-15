@@ -1,8 +1,8 @@
-# 효율적으로 챗봇 사용해보기(Efficient Chatbot Use)
+# 🤖효율적으로 챗봇 사용해보기(Efficient Chatbot Use)
 
 신한 DS 금융 SW 아카데미 JDBC Project
 
-## 프로젝트 소개
+## 💡프로젝트 소개
 
 상용 LLM모델을 이용한 서비스 제작 시 효율적인 운영을 위한 백엔드 기능 개발
 
@@ -24,10 +24,10 @@
   
     memory기능을 위하여 prompt에 이전 대화내용을 추가하다보면 굉장히 많은 token이 쌓이게 되므로 일정 token을 넘겼을 시 대화를 요약하여 데이터 량을 줄일 수 있도록 구현.
 
-## User Flow
+## 🪄User Flow
 <img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/3a448b36-40ed-45be-b60d-2a713ee87986" width="70%">
 
-## 주요 기능
+## 📝주요 기능
 
 ### 1. Chatbot memory
 
@@ -124,7 +124,7 @@ total token: 201
 ```
 prompt에 들어가는 log의 total token의 양이 일정 갯수를 넘어가면 summary를 생성한다. limit의 크기와 얼마나 요약할지는 상황에 따라 다르지만 많은 양의 토큰을 아낄 수 있음을 알 수 있다.
 
-## 추가 기능
+## 📑추가 기능
 
 ### 1. Generate Chat name
 
@@ -171,7 +171,7 @@ prompt에 들어가는 log의 total token의 양이 일정 갯수를 넘어가�
 ## ERD
 <img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/848e77b6-0a2c-43d0-b0c5-f9d9cd9982c5" width="70%">
 
-## 개선사항
+## ⚙️개선사항
 
 ### 1. Cache 기능의 낮은 유연성
 
