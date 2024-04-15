@@ -2,6 +2,8 @@
 
 신한 DS 금융 SW 아카데미 JDBC Project
 
+#### 📙 발표자료 보러가기([Click](https://github.com/MinkyoDev/efficient-chatbot-use/blob/main/docs/Chatbot%20Optimization.pdf))
+
 ## 💡프로젝트 소개
 
 상용 LLM모델을 이용한 서비스 제작 시 효율적인 운영을 위한 백엔드 기능 개발
