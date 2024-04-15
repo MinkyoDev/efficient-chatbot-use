@@ -16,16 +16,16 @@
 
 언어모델의 입력과 출력은 token단위로 이루어진다. Prompt token이 많을수록 모델이 분석해야하는 데이터가 많아지며 complition token이 많아질 수록 답변의 길이가 길어진다. 즉 token의 양이 많아질수록 생성 속도는 늦어지고 비용이 늘어가게 된다. 따라서 서비스의 퀄리티가 유지되는 한에서 최대한 token 사용을 줄일 필요가 있다.  
 
-- Cache 탐색
+- **Cache 탐색**
      
     사용자의 동일한 질문에 대하여 답변을 새로 생성하지 않고 log에서 조회하여 바로 답변하도록 구현.
      
-- Summary 제작
+- **Summary 제작**
   
     memory기능을 위하여 prompt에 이전 대화내용을 추가하다보면 굉장히 많은 token이 쌓이게 되므로 일정 token을 넘겼을 시 대화를 요약하여 데이터 량을 줄일 수 있도록 구현.
 
 ## 🪄User Flow
-<img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/3a448b36-40ed-45be-b60d-2a713ee87986" width="70%">
+<img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/3a448b36-40ed-45be-b60d-2a713ee87986" width="90%">
 
 ## 📝주요 기능
 
@@ -166,10 +166,10 @@ prompt에 들어가는 log의 total token의 양이 일정 갯수를 넘어가�
 
 
 ## Service Logic
-<img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/9ef4113d-61de-4613-8fd5-82767e83e0c7" width="70%">
+<img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/9ef4113d-61de-4613-8fd5-82767e83e0c7" width="90%">
 
 ## ERD
-<img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/848e77b6-0a2c-43d0-b0c5-f9d9cd9982c5" width="70%">
+<img src="https://github.com/MinkyoDev/efficient-chatbot-use/assets/141614581/848e77b6-0a2c-43d0-b0c5-f9d9cd9982c5" width="90%">
 
 ## ⚙️개선사항
 
