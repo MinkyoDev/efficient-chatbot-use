@@ -13,6 +13,8 @@ local.properties
 .project
 .classpath
 
+### VScode ###
+.vscode/
 
 ### Java ###
 # Compiled class file

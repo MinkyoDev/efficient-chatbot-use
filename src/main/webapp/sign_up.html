@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="css/login.css" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="js/login.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <h1>CREATE ACCOUNT</h1>
+        <form accept="">
+            <div class="input-wrapper">
+                <input type="text" id="email" autocomplete="off">
+                <label for="email"><span>Email</span></label>
+            </div>
+            <p class="alt-msg" id="email-alter"></p>
+            <p id="email-alter"></p>
+            <div class="input-wrapper">
+                <input type="password" id="password" autocomplete="off">
+                <label for="password"><span>Password</span></label>
+            </div>
+            <p class="alt-msg" id="pw-alter"></p>
+            <input class="mybox" type="submit" value="가입">
+        </form>
+        <div id="answer">
+            <span>이미 계정이 있으신가요?</span>
+            <a id="regbtn" href="login.html">로그인</a>
+        </div>
+    </div>
+</body>
+
+</html>

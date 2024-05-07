@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="css/chat.css" rel="stylesheet">
+    <script src="js/chat.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="side-bar">
+        <div id="new-chat-box">
+            <button id="new-chat-btn">
+                <span>New chat</span>
+                <img id="new-chat-icon" src="images/icons/new-chat.png">
+            </button>
+        </div>
+        <div>
+            <ol id="chat-list">
+                <li><button>1111</button></li>
+                <li><button>2222</button></li>
+            </ol>
+        </div>
+        <div id="user-setting-area">
+            <div id="user-setting-box">
+                <div id="logout-box"><span>logout</span></div>
+            </div>
+            <button id="user-btn">
+                <img id="user-icon" src="images/icons/defult-user.png">
+                <span>user name</span>
+            </button>
+        </div>
+        <div id="side-btn"><div></div></div>
+    </div>
+    <div id="temp"></div>
+    <div id="content">
+        <div id="content-header">
+            <button id="model-detail-btn"><span>GPT4-turbo</span><img id="model-detail-icon" src="images/icons/under-arrow.png"></button>
+            <div id="detail-box">
+                <div id="stream">
+                    <img class="detail-icons" id="stream-icon" src="images/icons/stream.png">
+                    <span>Stream</span>
+                    <img class="status-icon" src="images/icons/check.png">
+                </div>
+                <div id="cache">
+                    <img class="detail-icons" id="cache-icon" src="images/icons/cache.png">
+                    <span>Cache</span>
+                    <img class="status-icon" src="images/icons/check.png">
+                </div>
+                <div id="memory">
+                    <img class="detail-icons" id="memory-icon" src="images/icons/memory.png">
+                    <span>Memory</span>
+                    <img class="status-icon" src="images/icons/check.png">
+                </div>
+                <div id="delete">
+                    <button id="delete-btn">Delete Chat</button>
+                </div>
+            </div>
+
+        </div>
+        <div id="conv-box">
+            <div id="new-chat-text">
+                <p>New Chat</p>
+            </div>
+        </div>
+        <div id="content-footer">
+            <div id="textarea-container">
+                <textarea id="prompt-input" tabindex="0" dir="auto" rows="1" placeholder="Enter your prompt"></textarea>
+                <button id="prompt-button"><img id="prompt-button-icon" src="/images/icons/upper-arrow.png"></button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
