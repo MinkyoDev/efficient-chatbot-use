@@ -39,8 +39,9 @@ CREATE TABLE Chat (
 DROP TABLE Users;
 
 CREATE TABLE Users (
-	id	varChar2(100)		NOT NULL,
+	email	varChar2(100)		NOT NULL,
 	password	varChar2(100)		NOT NULL,
+	nicname	varChar2(100)		NOT NULL,
 	is_active	char(1)	DEFAULT 1	NOT NULL
 );
 
@@ -58,7 +59,7 @@ ALTER TABLE Chat ADD CONSTRAINT PK_CHAT PRIMARY KEY (
 );
 
 ALTER TABLE Users ADD CONSTRAINT PK_USERS PRIMARY KEY (
-	id
+	email
 );
 
 ALTER TABLE Models ADD CONSTRAINT PK_MODELS PRIMARY KEY (
@@ -77,7 +78,7 @@ ALTER TABLE Chat ADD CONSTRAINT FK_Users_TO_Chat_1 FOREIGN KEY (
 	user_id
 )
 REFERENCES Users (
-	id
+	email
 );
 
 ALTER TABLE Chat ADD CONSTRAINT FK_Models_TO_Chat_1 FOREIGN KEY (
@@ -167,8 +168,10 @@ insert into models values ('gpt-4', 'openAI', 0.03/1000, 0.06/1000);
 insert into models values ('gpt-4-1106-preview', 'openAI', 0.01/1000, 0.03/1000);
 commit;
 
-insert into users (id, password) values ('11', '1111');
+insert into users (email, nicname, password) values ('11', '1111', '1111');
 commit;
+
+select * from users;
 
 --insert into chat (chat_id, user_id, model, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, '11', 'gpt-3.5-turbo-1106', 1, 1);
 --rollback;
