@@ -1,4 +1,4 @@
-package com.shinhan.DTO;
+package com.shinhan.User;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,8 @@ import lombok.ToString;
 @Getter@Setter@ToString
 public class UserDTO {
 
-	private String id;
+	private String email;
+	private String nicname;
 	private String password;
 	private boolean is_active = true;
 
