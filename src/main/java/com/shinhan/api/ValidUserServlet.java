@@ -1,6 +1,7 @@
 package com.shinhan.api;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,30 +12,35 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import com.shinhan.User.UserService;
+import com.shinhan.utils.JSONParsing;
 
-@WebServlet("/api/v1/duplication-check")
-public class DuplicationServlet extends HttpServlet {
+@WebServlet("/api/v1/user-valid-check")
+public class ValidUserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String email = request.getParameter("email");
 
-		UserService userService = new UserService();
-		boolean result = userService.duplicationCheck(email);
+		JSONParsing jsonParsing = new JSONParsing();
+		JSONObject json = jsonParsing.JSONParse(request);
 
-		JSONObject responseData = new JSONObject();
-		if (result) {
-			responseData.put("message", "available");
-		} else {
-			responseData.put("message", "unavailable");
+		if (json == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().write("Error parsing JSON data!");
+			return;
 		}
+
+		String email = (String) json.get("email");
+		String password = (String) json.get("password");
+		
+		HashMap<String, String> result = new UserService().signIn(email, password);
+		
+		JSONObject responseData = new JSONObject(result);
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-
 		response.getWriter().write(responseData.toJSONString());
+
 	}
 
 }

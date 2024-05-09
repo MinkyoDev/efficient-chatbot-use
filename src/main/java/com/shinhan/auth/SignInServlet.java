@@ -1,13 +1,14 @@
 package com.shinhan.auth;
 
 import java.io.IOException;
+import java.util.HashMap;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.simple.JSONObject;
+import javax.servlet.http.HttpSession;
 
 import com.shinhan.User.UserService;
 
@@ -24,22 +25,21 @@ public class SignInServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		String nicname = email.split("@")[0];
-		
+
 		UserService userService = new UserService();
-//		boolean result = userService.signIn(email, password);
+		HashMap<String, String> result = userService.signIn(email, password);
+		if (!result.get("code").equals("0")) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	        response.setContentType("text/plain");
+	        response.setCharacterEncoding("UTF-8");
+	        response.getWriter().write("Unauthorized access.");
+	        return;
+		}
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("user", userService.getUser(email));
 
-		JSONObject responseData = new JSONObject();
-//		if (result) {
-//			responseData.put("message", "available");
-//		} else {
-//			responseData.put("message", "unavailable");
-//		}
-
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-
-		response.getWriter().write(responseData.toJSONString());
+		response.sendRedirect("../chat");
 	}
 
 }
