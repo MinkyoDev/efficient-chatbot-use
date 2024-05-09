@@ -74,7 +74,7 @@ function load_detail_icon() {
 function load_chat_list() {
     var chat_list_html = "";
     data.chatList.forEach(function(item){
-        chat_list_html += `<li><button>${item.chatName}</button></li>`
+        chat_list_html += `<li><button>${item.chatName}</button></li>`;
         console.log(item);
     })
     $("#chat-list").html(chat_list_html);

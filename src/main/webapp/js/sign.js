@@ -1,9 +1,11 @@
 
-import { sign_up } from './sign_up.js';
+import { signUp } from './sign_up.js';
+import { signIn } from './sign_in.js';
 
 
 $(document).ready(function() {
-	sign_up()
+	signUp();
+	signIn();
 	// duplication_check('Alice');
 	change_input_style();
 	// check_submit();

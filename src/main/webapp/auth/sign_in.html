@@ -14,14 +14,14 @@
 <body>
     <div id="container">
         <h1>WELCOME BACK!</h1>
-        <form accept="">
+        <form id="sign-in-form" accept="sign-in" method="post">
             <div class="input-wrapper">
-                <input type="text" id="email" autocomplete="off">
+                <input type="text" id="email" name="email" autocomplete="off">
                 <label for="email"><span>Email</span></label>
             </div>
             <p class="alt-msg" id="email-alter"></p>
             <div class="input-wrapper">
-                <input type="password" id="password" autocomplete="off">
+                <input type="password" id="password" name="password" autocomplete="off">
                 <label for="password"><span>Password</span></label>
             </div>
             <p class="alt-msg" id="pw-alter"></p>

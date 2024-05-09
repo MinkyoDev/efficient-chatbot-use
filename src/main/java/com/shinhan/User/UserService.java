@@ -21,13 +21,24 @@ public class UserService {
 		return result == 1 ? true : false;
 	}
 	
-	public void signIn(String email, String password) {
+	public HashMap<String, String> signIn(String email, String password) {
 		HashMap<String, String> response = new HashMap<>();
 		UserDTO user = userDAO.selectAllByEmail(email);
 		if (user == null) {
-			response.put("code", "0");
+			response.put("code", "1");
 			response.put("message", "Invalid email");
+		} else if (!user.getPassword().equals(password)) {
+			response.put("code", "2");
+			response.put("message", "Invalid password");
+		} else {
+			response.put("code", "0");
+			response.put("message", "sign in successfully");			
 		}
+		return response;
+	}
+	
+	public UserDTO getUser(String email) {
+		return userDAO.selectAllByEmail(email);
 	}
 
 
