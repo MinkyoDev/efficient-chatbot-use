@@ -27,10 +27,10 @@ public class SignInFilter extends HttpFilter implements Filter {
 
 		HttpSession session = req.getSession();
 		UserDTO user = (UserDTO) session.getAttribute("user");
-		if (user == null) {
-			res.sendRedirect("auth/sign-in");
-			return;
-		}
+//		if (user == null) {
+//			res.sendRedirect("auth/sign-in");
+//			return;
+//		}
 
 		chain.doFilter(request, response);
 	}
