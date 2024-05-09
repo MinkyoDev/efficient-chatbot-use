@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
+import com.shinhan.utils.DotEnv;
+import com.shinhan.utils.EnvManager;
 import com.shinhan.utils.JSONParsing;
 import com.shinhan.utils.OpenAIRequest;
 
@@ -33,8 +35,9 @@ public class ChatAPIServlet extends HttpServlet {
 		System.out.println(json);
 		String content = (String) json.get("content");
 		
+		String localPath = getServletContext().getRealPath("/");
 		OpenAIRequest openai = new OpenAIRequest();
-		openai.getChatbotResponse("gpt-3.5-turbo", content);
+		openai.getChatbotResponse("gpt-3.5-turbo", content, localPath);
 	}
 
 }
