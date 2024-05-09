@@ -1,4 +1,6 @@
-data1 = {
+import { getAnswer } from "./connections.js";
+
+var data1 = {
     "chat": [
         {
             "type": "user",
@@ -19,7 +21,7 @@ data1 = {
     ]
 }
 
-data = {
+ var data = {
     "chat": [],
     "chatList": [
         {
@@ -40,7 +42,7 @@ data = {
     }
 }
 
-var side_var_enabled = true;
+var side_var_enabled = false;
 var icon_path = "images/icons"
 
 $(document).ready(function () {
@@ -52,11 +54,16 @@ $(document).ready(function () {
 
     load_detail_icon();
 
-    $("#side-btn").click(side_var_move);
+    $("#side-btn").click(toggleSidebar);
 
     user_menu_toggle();
 
     detail_toggle()
+    
+    $("#logout-btn").click(function(){
+        // 버튼을 클릭하면 새로운 URL로 이동
+        window.location.href = "auth/logout";
+    });
 });
 
 function load_detail_icon() {
@@ -74,7 +81,7 @@ function load_detail_icon() {
 function load_chat_list() {
     var chat_list_html = "";
     data.chatList.forEach(function(item){
-        chat_list_html += `<li><button>${item.chatName}</button></li>`;
+        chat_list_html += `<li><button class="mgray-hover">${item.chatName}</button></li>`;
         console.log(item);
     })
     $("#chat-list").html(chat_list_html);
@@ -136,13 +143,15 @@ function user_menu_toggle() {
     });
 }
 
-function side_var_move() {
+function toggleSidebar() {
     if (!side_var_enabled) {
-        $(this).parent().css("transform", "translate(20px, 0)");
+        // $(this).parent().css("transform", "translate(var(--side-bar-transform), 0)");
+        $("#side-bar").css("transform", "translate(var(--side-bar-transform), 0)");
         $("#temp").css("width", "var(--side-bar-width)");
         side_var_enabled = true;
     } else {
-        $(this).parent().css("transform", "translate(calc(var(--side-bar-width) * -1), 0)");
+        // $(this).parent().css("transform", "translate(calc(var(--side-bar-width) * -1), 0)");
+        $("#side-bar").css("transform", "translate(calc(var(--side-bar-width) * -1), 0)");
         $("#temp").css("width", "0");
         side_var_enabled = false;
     }
@@ -194,6 +203,7 @@ function auto_textarea_height() {
         }
         make_ballons("user", prompt);
         make_ballons("loding");
+        getAnswer(prompt);
         setTimeout(sayHi, 0, "홍길동", "안녕하세요.");
         $("#prompt-button").prop("disabled", true);
         $("html, body").animate({ scrollTop: $(document).height() }, "slow");

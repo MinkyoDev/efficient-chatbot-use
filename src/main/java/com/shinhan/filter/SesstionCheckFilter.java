@@ -14,24 +14,40 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.shinhan.domain.dto.UserDTO;
+import com.shinhan.utils.URLUtils;
 
-@WebFilter("/chat")
-public class SignInFilter extends HttpFilter implements Filter {
-
+@WebFilter("/*")
+public class SesstionCheckFilter extends HttpFilter implements Filter {
 	private static final long serialVersionUID = 1L;
+
+	private final String[] allowedUrls = { "/sign-in", "/sign-up" };
+
+	private boolean isLoginCheckPath(String requestURL) {
+		for (String allowedUrl : allowedUrls) {
+			if (requestURL.contains(allowedUrl)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 
-		HttpSession session = req.getSession();
-		UserDTO user = (UserDTO) session.getAttribute("user");
-		if (user == null) {
-			res.sendRedirect("auth/sign-in");
+		String requestURI = req.getRequestURI();
+		if (isLoginCheckPath(requestURI)) {
+			HttpSession session = req.getSession();
+			UserDTO user = (UserDTO) session.getAttribute("user");
+			if (user != null) {
+				String absURL = URLUtils.getAbsoluteURL(req);
+				res.sendRedirect(absURL + "/chat");
+				return;
+			}
+			chain.doFilter(request, response);
 			return;
 		}
-
 		chain.doFilter(request, response);
 	}
 }

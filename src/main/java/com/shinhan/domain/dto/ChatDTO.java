@@ -1,4 +1,4 @@
-package com.shinhan.DTO;
+package com.shinhan.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;

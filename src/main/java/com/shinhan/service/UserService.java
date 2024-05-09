@@ -1,9 +1,12 @@
-package com.shinhan.User;
+package com.shinhan.service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.shinhan.domain.dao.UserDAO;
+import com.shinhan.domain.dto.UserDTO;
 
 public class UserService {
 

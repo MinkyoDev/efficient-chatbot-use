@@ -1,8 +1,12 @@
 :root {
-    --side-bar-width: 20vw;
-    --side-bar-height: 95vh;
+    --side-bar-width: 230px;
+    --side-bar-height: 98vh;
+    --side-bar-transform: 1vw;
     --content-width: 60vw;
     --content-height: 100vh;
+    --content-width-min: 380px;
+    --content-width-max: 800px;
+
 
     --font-size-s: 15px;
     --font-size-m: 16px;
@@ -40,6 +44,22 @@ button {
     border: none;
 }
 
+.mgray-hover {
+    transition: background-color var(--hover-time);
+}
+
+.mgray-hover:hover {
+    background-color: var(--color-mgray) !important;
+}
+
+.lgray-hover {
+    transition: background-color var(--hover-time);
+}
+
+.lgray-hover:hover {
+    background-color: var(--color-lgray) !important;
+}
+
 /*  ======== side bar ======== */
 #side-bar {
     box-sizing: border-box;
@@ -49,10 +69,11 @@ button {
     padding: 20px;
     padding-top: 40px;
     position: fixed;
-    top: 2.5vh;
+    top: 1vh;
     border-radius: var(--border-radius-xl);
-    transform: translate(20px, 0);
-    transition: .5s;
+    /* transform: translate(var(--side-bar-transform), 0); */
+    transform: translate(calc(var(--side-bar-width) * -1), 0);
+    transition: .2s;
     display: flex;
     flex-direction: column;
 }
@@ -65,12 +86,8 @@ button {
     border-radius: var(--border-radius-m);
     display: flex;
     justify-content: space-around;
-    transition: background-color var(--hover-time);
+    
     cursor: pointer;
-}
-
-#new-chat-btn:hover {
-    background-color: var(--color-mgray);
 }
 
 #new-chat-btn span {
@@ -94,12 +111,7 @@ button {
     margin: 5px 0;
     padding: 5px 20px;
     border-radius: var(--border-radius-s);
-    transition: background-color var(--hover-time);
     cursor: pointer;
-}
-
-#chat-list li button:hover {
-    background-color: var(--color-mgray);
 }
 
 #user-setting-area {
@@ -114,12 +126,7 @@ button {
     display: flex;
     justify-content: start;
     align-items: center;
-    transition: background-color var(--hover-time);
     cursor: pointer;
-}
-
-#user-btn:hover {
-    background-color: var(--color-mgray);
 }
 
 #user-btn span {
@@ -140,21 +147,54 @@ button {
 }
 
 #user-setting-box {
-    position: absolute;
+    position: relative;
     display: none;
     flex-direction: column;
     justify-content: center;
-    background-color: #fff;
-    border-radius: var(--border-radius-m);
-    box-shadow: 0px 0px 3px black;
     width: 100%;
-    height: 30px;
-    top: -40px;
+    box-sizing: border-box;
+    top: -7%;
     left: 0px;
 }
 
-#logout-box {
+#user-setting-box div {
+    box-sizing: border-box;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    padding: 10px 20px;
+    background-color: #fff;
+    border-radius: var(--border-radius-m);
+    box-shadow: 0px 0px 3px black;
+}
+
+#user-setting-box hr {
+    margin: 5px 0;
+    height: 1px;
+    background-color: var(--color-hgray);
+    border: 0;
+}
+
+#logout-btn {
     color: var(--color-red);
+    font-size: var(--font-size-s);
+    background-color: #fff;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+    border-radius: var(--border-radius-m);
+}
+
+#setting-btn {
+    color: var(--color-black);
+    font-size: var(--font-size-s);
+    background-color: #fff;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+    border-radius: var(--border-radius-m);
 }
 
 #side-btn {
@@ -183,7 +223,8 @@ button {
 
 /* ======== content area ======== */
 #temp {
-    width: var(--side-bar-width);
+    /* width: var(--side-bar-width); */
+    width: 0;
     height: var(--content-height);
     transition: width 0.2s;
 }
@@ -191,6 +232,8 @@ button {
 #content {
     box-sizing: border-box;
     width: var(--content-width);
+    min-width: var(--content-width-min);
+    max-width: var(--content-width-max);
     display: flex;
     flex-direction: column;
     margin: 0 auto;
@@ -220,12 +263,7 @@ button {
     vertical-align: middle;
     align-items: center;
     position: relative;
-    transition: background-color var(--hover-time);
     cursor: pointer;
-}
-
-#model-detail-btn:hover {
-    background-color: var(--color-lgray);
 }
 
 #model-detail-icon {
@@ -274,12 +312,7 @@ button {
     font-size: var(--font-size-s);
     background-color: #fff;
     border-radius: var(--border-radius-s);
-    transition: background-color var(--hover-time);
     cursor: pointer;
-}
-
-#delete-btn:hover {
-    background-color: var(--color-mgray);
 }
 
 .detail-icons {
@@ -292,14 +325,19 @@ button {
 
 #new-chat-text {
     font-size: var(--font-size-xl);
-    margin-bottom: 50%;
+    margin-bottom: 30vh;
+}
+
+#new-chat-text p {
+    font-size: var(--font-size-s);
+}
+
+#new-chat-text p:first-of-type {
+    font-size: var(--font-size-xl);
+    margin: 15px 0;
 }
 
 /* ======== conversation balloons ======== */
-#header-temp {
-    height: 140px;
-}
-
 #conv-box {
     padding-bottom: 110px;
     margin-top: auto;
@@ -439,6 +477,8 @@ button {
 /* ======== content-footer ======== */
 #content-footer {
     width: var(--content-width);
+    min-width: var(--content-width-min);
+    max-width: var(--content-width-max);
     position: fixed;
     bottom: 0px;
     padding-top: 20px;
