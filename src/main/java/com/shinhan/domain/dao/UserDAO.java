@@ -1,4 +1,4 @@
-package com.shinhan.User;
+package com.shinhan.domain.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.shinhan.domain.dto.UserDTO;
 import com.shinhan.utils.DBUtil;
 
 public class UserDAO {

@@ -1,9 +1,9 @@
-package com.shinhan.Services;
+package com.shinhan.service;
 
 import java.util.List;
 
-import com.shinhan.DAO.ModelDAO;
-import com.shinhan.DTO.ModelDTO;
+import com.shinhan.domain.dao.ModelDAO;
+import com.shinhan.domain.dto.ModelDTO;
 
 public class ModelService {
 

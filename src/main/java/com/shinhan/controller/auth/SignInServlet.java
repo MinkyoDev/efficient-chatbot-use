@@ -1,4 +1,4 @@
-package com.shinhan.auth;
+package com.shinhan.controller.auth;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.shinhan.User.UserService;
+import com.shinhan.service.UserService;
 
 @WebServlet("/auth/sign-in")
 public class SignInServlet extends HttpServlet {

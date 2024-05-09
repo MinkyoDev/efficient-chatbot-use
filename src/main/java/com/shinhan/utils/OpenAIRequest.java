@@ -1,6 +1,8 @@
 package com.shinhan.utils;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -8,83 +10,137 @@ import java.net.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.JSONArray;
 
-import com.shinhan.DTO.ChatLogDTO;
-import com.shinhan.DTO.HistoryDTO;
+import com.shinhan.domain.dto.ChatLogDTO;
+import com.shinhan.domain.dto.HistoryDTO;
 
 public class OpenAIRequest {
 
 	private static final String OPENAI_URL = "https://api.openai.com/v1/chat/completions";
-    
-    // 공통 HTTP 요청 메소드
-    private static String sendHttpRequest(String jsonInputString, String urlString) throws Exception {
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization", "Bearer " + DotEnv.getEnv("OPENAI_KEY"));
-        connection.setDoOutput(true);
 
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
+	public static String sendPostRequest(String url, JSONObject jsonBody) throws IOException {
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-        StringBuilder response = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
-            String responseLine;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-        }
-        connection.disconnect();
-        
-        return response.toString();
-    }
+		con.setRequestMethod("POST");
+		con.setRequestProperty("Content-Type", "application/json");
+		con.setRequestProperty("Authorization", "Bearer " + DotEnv.getEnv("OPENAI_KEY"));
+		con.setDoOutput(true);
 
-    public JSONObject chatBot(String modelName, String prompt) {
-        String jsonInputString = String.format(
-                "{\"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}], \"max_tokens\": 500, \"temperature\": 0.7}",
-                modelName, prompt);
-        try {
-            String response = sendHttpRequest(jsonInputString, OPENAI_URL);
-            JSONObject jsonResponse = new JSONObject(response);
-            return jsonResponse;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    
-    public String chatBotStream(String modelName, String prompt) {
-        String jsonInputString = String.format(
-                "{" +
-                "\"model\": \"%s\"," +
-                "\"messages\": [" +
-                "  {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"}," +
-                "  {\"role\": \"user\", \"content\": \"%s\"}]," +
-                "\"stream\": true" +
-                "}", modelName, prompt);
+		String jsonInputString = jsonBody.toString();
 
-        try {
-            URL url = new URL(OPENAI_URL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Authorization", "Bearer " + DotEnv.getEnv("OPENAI_KEY"));
-            connection.setDoOutput(true);
-            connection.setChunkedStreamingMode(0); // 스트리밍 모드 활성화
+		try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+			wr.writeBytes(jsonInputString);
+			wr.flush();
+		}
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-            String contents = "";
-            // 서버로부터 스트리밍 응답 처리
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
-                String responseLine;
-                while ((responseLine = br.readLine()) != null) {
-                	if (responseLine.startsWith("data: ")) {
+		int responseCode = con.getResponseCode();
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuilder response = new StringBuilder();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+
+		return response.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject makeJson(String modelName, String content) {
+		JSONArray messages = new JSONArray();
+		JSONObject message = new JSONObject();
+		message.put("role", "user");
+		message.put("content", content);
+		messages.add(message);
+
+		JSONObject data = new JSONObject();
+		data.put("model", modelName);
+		data.put("messages", messages);
+
+		System.out.println(data);
+		return data;
+	}
+
+	public void getChatbotResponse(String modelName, String content) {
+		JSONObject jsonInput = makeJson(modelName, content);
+		try {
+			String response = sendPostRequest(OPENAI_URL, jsonInput);
+			System.out.println("Response: " + response);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+//	// 공통 HTTP 요청 메소드
+	private String sendHttpRequest(String jsonInputString, String urlString) throws Exception {
+		URL url = new URL(urlString);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setRequestProperty("Authorization", "Bearer " + DotEnv.getEnv("OPENAI_KEY"));
+		connection.setDoOutput(true);
+
+		try (OutputStream os = connection.getOutputStream()) {
+			byte[] input = jsonInputString.getBytes("utf-8");
+			os.write(input, 0, input.length);
+		}
+
+		StringBuilder response = new StringBuilder();
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+			String responseLine;
+			while ((responseLine = br.readLine()) != null) {
+				response.append(responseLine.trim());
+			}
+		}
+		connection.disconnect();
+
+		return response.toString();
+	}
+
+	public JSONObject chatBot(String modelName, String prompt) {
+		String jsonInputString = String.format(
+				"{\"model\": \"%s\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}], \"max_tokens\": 500, \"temperature\": 0.7}",
+				modelName, prompt);
+
+		try {
+			String response = sendHttpRequest(jsonInputString, OPENAI_URL);
+			JSONObject jsonResponse = new JSONObject(response);
+			return jsonResponse;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String chatBotStream(String modelName, String prompt) {
+		String jsonInputString = String.format(
+				"{" + "\"model\": \"%s\"," + "\"messages\": ["
+						+ "  {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},"
+						+ "  {\"role\": \"user\", \"content\": \"%s\"}]," + "\"stream\": true" + "}",
+				modelName, prompt);
+
+		try {
+			URL url = new URL(OPENAI_URL);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Authorization", "Bearer " + DotEnv.getEnv("OPENAI_KEY"));
+			connection.setDoOutput(true);
+			connection.setChunkedStreamingMode(0); // 스트리밍 모드 활성화
+
+			try (OutputStream os = connection.getOutputStream()) {
+				byte[] input = jsonInputString.getBytes("utf-8");
+				os.write(input, 0, input.length);
+			}
+			String contents = "";
+			// 서버로부터 스트리밍 응답 처리
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+				String responseLine;
+				while ((responseLine = br.readLine()) != null) {
+					if (responseLine.startsWith("data: ")) {
 						String jsonData = responseLine.substring(6);
 						try {
 							JSONObject jsonObject = new JSONObject(jsonData);
@@ -95,16 +151,16 @@ public class OpenAIRequest {
 						} catch (Exception e) {
 						}
 					}
-                }
-            }
-            System.out.println();
-            connection.disconnect();
-            return contents;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+				}
+			}
+			System.out.println();
+			connection.disconnect();
+			return contents;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public ChatLogDTO makeChat(int chatid, String modelName, String input, JSONObject jr) {
 		ChatLogDTO chatDTO = new ChatLogDTO();
@@ -121,7 +177,7 @@ public class OpenAIRequest {
 		}
 		return chatDTO;
 	}
-	
+
 	public ChatLogDTO makeChat(int chatid, String modelName, String input, String contents) {
 		ChatLogDTO chatDTO = new ChatLogDTO();
 		chatDTO.setChat_id(chatid);

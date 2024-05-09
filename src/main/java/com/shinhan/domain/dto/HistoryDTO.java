@@ -1,17 +1,15 @@
-package com.shinhan.DTO;
+package com.shinhan.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter@Setter@ToString
-public class LogDTO {
+public class HistoryDTO {
 
-	private int log_id;
 	private int chat_id;
-	private int history_id;
-	private String request;
-	private String response;
+	private int deps;
+	private String summary;
 	private int prompt_tokens;
 	private int completion_tokens;
 

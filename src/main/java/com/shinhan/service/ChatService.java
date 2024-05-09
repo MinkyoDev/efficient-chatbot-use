@@ -1,4 +1,4 @@
-package com.shinhan.Services;
+package com.shinhan.service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.shinhan.DAO.ChatDAO;
-import com.shinhan.DAO.ChatLogDAO;
-import com.shinhan.DTO.ChatDTO;
-import com.shinhan.DTO.LogDTO;
+import com.shinhan.domain.dao.ChatDAO;
+import com.shinhan.domain.dao.ChatLogDAO;
+import com.shinhan.domain.dto.ChatDTO;
+import com.shinhan.domain.dto.LogDTO;
 import com.shinhan.utils.Constants;
 import com.shinhan.utils.OpenAIRequest;
 

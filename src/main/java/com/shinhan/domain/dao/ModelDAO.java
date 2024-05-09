@@ -1,4 +1,4 @@
-package com.shinhan.DAO;
+package com.shinhan.domain.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shinhan.DTO.ModelDTO;
+import com.shinhan.domain.dto.ModelDTO;
 import com.shinhan.utils.DBUtil;
 
 public class ModelDAO {

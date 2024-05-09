@@ -1,13 +1,14 @@
-package com.shinhan.auth;
+package com.shinhan.controller.auth;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.shinhan.User.UserService;
+import com.shinhan.service.UserService;
 
 @WebServlet("/auth/sign-up")
 public class SignUpServlet extends HttpServlet {
@@ -27,8 +28,10 @@ public class SignUpServlet extends HttpServlet {
 		
 		UserService userService = new UserService();
 		boolean result = userService.signUp(email, nicname, password);
-
-		request.getRequestDispatcher("sign_up_success.html").forward(request, response);
+		if (result) {
+			request.setAttribute("nicname", nicname);
+			request.getRequestDispatcher("sign_up_success.jsp").forward(request, response);			
+		}
 	}
 
 	

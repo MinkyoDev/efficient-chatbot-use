@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,8 +27,8 @@
         <h1>Sign-up successful!</h1>
         
         <div id="answer">
-            <p id="message">í™˜ì˜í•©ë‹ˆë‹¤, <b>[ì‚¬ìš©ìž ë‹‰ë„¤ìž„]</b>ë‹˜! ê°€ìž…ì´ ì„±ê³µì ìœ¼ë¡œ ì´ë£¨ì–´ì¡ŒìŠµë‹ˆë‹¤. ì´ì œ ì‹œìž‘í•´ë³´ì„¸ìš”!</p>
-            <a id="regbtn" href="sign-in">ë¡œê·¸ì¸</a>
+            <p id="message">È¯¿µÇÕ´Ï´Ù, <b>${nicname}</b>´Ô! °¡ÀÔÀÌ ¼º°øÀûÀ¸·Î ÀÌ·ç¾îÁ³½À´Ï´Ù. ÀÌÁ¦ ½ÃÀÛÇØº¸¼¼¿ä!</p>
+            <a id="regbtn" href="sign-in">·Î±×ÀÎ</a>
         </div>
         
     </div>

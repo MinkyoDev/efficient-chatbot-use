@@ -1,4 +1,4 @@
-package com.shinhan.DAO;
+package com.shinhan.domain.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shinhan.DTO.ChatLogDTO;
-import com.shinhan.DTO.LogDTO;
+import com.shinhan.domain.dto.ChatLogDTO;
+import com.shinhan.domain.dto.LogDTO;
 import com.shinhan.utils.DBUtil;
 
 public class ChatLogDAO {

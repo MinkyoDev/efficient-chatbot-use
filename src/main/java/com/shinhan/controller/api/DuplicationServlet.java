@@ -1,4 +1,4 @@
-package com.shinhan.api;
+package com.shinhan.controller.api;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
-import com.shinhan.User.UserService;
+import com.shinhan.service.UserService;
 
 @WebServlet("/api/v1/duplication-check")
 public class DuplicationServlet extends HttpServlet {

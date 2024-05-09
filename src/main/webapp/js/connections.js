@@ -26,7 +26,6 @@ export function validCheck(email, pw, message) {
 		async: false,
 		data: JSON.stringify(data),
 		success: function(response) {
-			console.log(response);
 			if (response.code === "1") {
 				message.email = "잘못된 이메일입니다."
 			} else if (response.code === "2") {
@@ -38,4 +37,30 @@ export function validCheck(email, pw, message) {
 		}
 	})
 	return message;
+}
+
+export function getAnswer(content) {
+	var baseUrl = getAbsoluteURL(window.location.href);
+	console.log(baseUrl);
+
+	var data = { "content": content };
+	$.ajax({
+		type: "post",
+		url: baseUrl + "/api/v1/chatting",
+		async: false,
+		data: JSON.stringify(data),
+		success: function(response) {
+			console.log(response);
+		},
+		error: function(error) {
+			console.log(error);
+		}
+	})
+}
+
+function getAbsoluteURL(currentUrl) {
+	var firstSlashIndex = currentUrl.indexOf('/', currentUrl.indexOf('//') + 2);
+	var secondSlashIndex = currentUrl.indexOf('/', firstSlashIndex + 1);
+	var baseUrl = currentUrl.substring(0, secondSlashIndex);
+	return baseUrl;
 }
