@@ -28,7 +28,7 @@ DROP TABLE Chat;
 
 CREATE TABLE Chat (
 	chat_id	number		NOT NULL,
-	user_id	varChar2(100)		NOT NULL,
+	user_email	varChar2(100)		NOT NULL,
 	model	varChar(200)		NOT NULL,
 	name	varChar2(500)		NULL,
 	stream_enabled	char(1)	DEFAULT 0	NOT NULL,
@@ -75,7 +75,7 @@ ALTER TABLE History ADD CONSTRAINT PK_HISTORY PRIMARY KEY (
 );
 
 ALTER TABLE Chat ADD CONSTRAINT FK_Users_TO_Chat_1 FOREIGN KEY (
-	user_id
+	user_email
 )
 REFERENCES Users (
 	email
@@ -173,7 +173,7 @@ commit;
 
 select * from users;
 
---insert into chat (chat_id, user_id, model, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, '11', 'gpt-3.5-turbo-1106', 1, 1);
+--insert into chat (chat_id, user_email, model, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, '11', 'gpt-3.5-turbo-1106', 1, 1);
 --rollback;
 --commit;
 
@@ -191,7 +191,7 @@ select * from users;
 --select * from chat_log where chat_id = 2 and request = '¾È³ç';
 --select * from models;
 --delete from chat where chat_id = 1;
---select * from chat where user_id = '11';
+--select * from chat where user_email = '11';
 --select * from chat_log where chat_id = 1;
 --select * from chat;
 --update users set is_active = 1 where id = '22';
@@ -201,7 +201,7 @@ select * from users;
 --select * from history ;
 --delete from users;
 --select sum(prompt_tokens) + sum(completion_tokens) total_tokens from chat_log where history_id is null and chat_id = 1;
---select logs.user_id, logs.chat_id, logs.request, logs.response from(select * from chat_log join Chat using (chat_id) where chat_id = 1 order by create_at desc) logs where rownum<=5 order by logs.create_at asc;
+--select logs.user_email, logs.chat_id, logs.request, logs.response from(select * from chat_log join Chat using (chat_id) where chat_id = 1 order by create_at desc) logs where rownum<=5 order by logs.create_at asc;
 --select * from chat_log join Chat using (chat_id) where chat_id = 1 and history_id is null order by create_at;
 --select summary from history where chat_id = 1;
 --select * from chat_log where chat_id = 1;

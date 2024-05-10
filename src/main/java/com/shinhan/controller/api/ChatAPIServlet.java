@@ -1,6 +1,7 @@
 package com.shinhan.controller.api;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,8 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
-import com.shinhan.utils.DotEnv;
-import com.shinhan.utils.EnvManager;
 import com.shinhan.utils.JSONParsing;
 import com.shinhan.utils.OpenAIRequest;
 
@@ -22,6 +21,7 @@ public class ChatAPIServlet extends HttpServlet {
 			throws ServletException, IOException {
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		JSONParsing jsonParsing = new JSONParsing();
@@ -34,10 +34,18 @@ public class ChatAPIServlet extends HttpServlet {
 		}
 		System.out.println(json);
 		String content = (String) json.get("content");
-		
+
 		String localPath = getServletContext().getRealPath("/");
 		OpenAIRequest openai = new OpenAIRequest();
-		openai.getChatbotResponse("gpt-3.5-turbo", content, localPath);
+		String answer = openai.getChatbotResponse("gpt-3.5-turbo", content, localPath);
+
+		JSONObject responseData = new JSONObject();
+		responseData.put("answer", answer);
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+
+		response.getWriter().write(responseData.toJSONString());
 	}
 
 }

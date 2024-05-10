@@ -20,12 +20,12 @@ public class ChatDAO {
 
 	public int insertChat(ChatDTO chat) {
 		int generatedChatId = 0;
-		String sql = "INSERT INTO chat (chat_id, user_id, model, stream_enabled, memory_enabled, ceche_enabled) "
+		String sql = "INSERT INTO chat (chat_id, user_email, model, stream_enabled, memory_enabled, ceche_enabled) "
 				+ "VALUES (chatid_seq.nextVal, ?, ?, ?, ?, ?)";
 		conn = DBUtil.dbConnection();
 		try {
 			pst = conn.prepareStatement(sql, new String[] { "chat_id" });
-			pst.setString(1, chat.getUser_id());
+			pst.setString(1, chat.getUser_email());
 			pst.setString(2, chat.getModel());
 			pst.setBoolean(3, chat.isStream_enabled());
 			pst.setBoolean(4, chat.isMemory_enabled());
@@ -47,13 +47,13 @@ public class ChatDAO {
 	}
 
 	// select
-	public List<ChatDTO> selectAll(String userid) {
+	public List<ChatDTO> selectAll(String userEmail) {
 		List<ChatDTO> chatList = new ArrayList<>();
-		String sql = "select * from chat where user_id = ?";
+		String sql = "select * from chat where user_email = ?";
 		conn = DBUtil.dbConnection();
 		try {
 			pst = conn.prepareStatement(sql);
-			pst.setString(1, userid);
+			pst.setString(1, userEmail);
 			rs = pst.executeQuery();
 			while (rs.next()) {
 				ChatDTO chat = makeChat(rs);
@@ -125,7 +125,7 @@ public class ChatDAO {
 	public ChatDTO makeChat(ResultSet rs) throws SQLException {
 		ChatDTO chat = new ChatDTO();
 		chat.setChat_id(rs.getInt("chat_id"));
-		chat.setUser_id(rs.getString("user_id"));
+		chat.setUser_email(rs.getString("user_email"));
 		chat.setModel(rs.getString("model"));
 		chat.setName(rs.getString("name"));
 		chat.setStream_enabled(rs.getBoolean("stream_enabled"));

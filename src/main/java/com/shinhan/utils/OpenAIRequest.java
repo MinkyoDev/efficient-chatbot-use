@@ -17,31 +17,29 @@ public class OpenAIRequest {
 
 	private static final String OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
-	public static String sendPostRequest(String url, JSONObject jsonBody, String openAIKey) throws IOException {
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-		con.setRequestMethod("POST");
-		con.setRequestProperty("Content-Type", "application/json");
-		con.setRequestProperty("Authorization", "Bearer " + openAIKey);
-		con.setDoOutput(true);
-
+	private String sendRequest(String url, JSONObject jsonBody, String openAIKey) throws IOException {
+		URL urlObj = new URL(url);
 		String jsonInputString = jsonBody.toString();
+		
+		HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setRequestProperty("Authorization", "Bearer " + openAIKey);
+		connection.setDoOutput(true);
 
-		try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-			wr.writeBytes(jsonInputString);
-			wr.flush();
+		try (OutputStream os = connection.getOutputStream()) {
+			byte[] input = jsonInputString.getBytes("utf-8");
+			os.write(input, 0, input.length);
 		}
 
-		int responseCode = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
 		StringBuilder response = new StringBuilder();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+			String responseLine;
+			while ((responseLine = br.readLine()) != null) {
+				response.append(responseLine.trim());
+			}
 		}
-		in.close();
+		connection.disconnect();
 
 		return response.toString();
 	}
@@ -62,34 +60,39 @@ public class OpenAIRequest {
 		return data;
 	}
 
-	public void jsonParsingExample(String jsonString) {
+	public String jsonParsingExample(String jsonString) {
 		JSONParser parser = new JSONParser();
-
+		String content = null;
 		try {
 			JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
-			System.out.println(jsonObject);
-			System.out.println(jsonObject.get("choices"));
-			System.out.println(jsonObject.get("choices").getClass());
 			JSONArray jsonArray = (JSONArray) jsonObject.get("choices");
 			JSONObject data = (JSONObject) ((JSONObject) jsonArray.get(0)).get("message");
-			System.out.println(data.get("content"));
-			String content = (String) data.get("content");
+
+			content = (String) data.get("content");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		return content;
 	}
 
-	public void getChatbotResponse(String modelName, String content, String localPath) {
+	public String getChatbotResponse(String modelName, String content, String localPath) {
 		JSONObject jsonInput = makeJson(modelName, content);
+		String result = null;
 		try {
-			String response = sendPostRequest(OPENAI_URL, jsonInput, EnvManager.getProperty(localPath, "openai_key"));
+			String response = sendRequest(OPENAI_URL, jsonInput, EnvManager.getProperty(localPath, "openai_key"));
 			System.out.println("Response: " + response);
-			jsonParsingExample(response);
+			result = jsonParsingExample(response);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return result;
 	}
 
+	
+	
+	
+	
+	
 //	// 공통 HTTP 요청 메소드
 	private String sendHttpRequest(String jsonInputString, String urlString) throws Exception {
 		URL url = new URL(urlString);
