@@ -12,6 +12,7 @@
     --font-size-m: 16px;
     --font-size-l: 18px;
     --font-size-xl: 20px;
+    --font-size-xxl: 25px;
 
     --border-radius-s: 8px;
     --border-radius-m: 10px;
@@ -86,7 +87,7 @@ button {
     border-radius: var(--border-radius-m);
     display: flex;
     justify-content: space-around;
-    
+
     cursor: pointer;
 }
 
@@ -249,7 +250,7 @@ button {
     padding-bottom: 30px;
     position: sticky;
     top: 0;
-    z-index: 99;
+    z-index: 2;
     background-color: #fff;
 }
 
@@ -531,6 +532,128 @@ button {
 }
 
 #prompt-button-icon {
-    width: 12px;
+    width: 13px;
     margin: auto;
+}
+
+
+/* ========== new chat modal ========== */
+#new-chat-modal {
+    position: absolute;
+    /* display: flex; */
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* transition: all var(--hover-time); */
+    transition: opacity 3s ease;
+}
+
+.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.modal-body {
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    width: 400px;
+    height: 300px;
+    padding: 40px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: opacity 3s ease;
+
+}
+
+.modal-body h2 {
+    font-size: var(--font-size-xxl);
+    margin-bottom: 40px;
+}
+
+.modal-body .select-div {
+    display: flex;
+    flex-direction: column;
+}
+
+#model-select {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 20px 0;
+    border: none;
+    font-size: var(--font-size-s);
+    border-radius: var(--border-radius-m);
+    text-align: center;
+    -webkit-appearance: none;
+    /* for chrome */
+
+    -moz-appearance: none;
+    /*for firefox*/
+
+    appearance: none;
+
+    background: url('../images/icons/dropdown.png') no-repeat 97% 50%/10px 7px;
+    background-color: var(--color-lgray);
+}
+
+.modal-body div {
+    display: flex;
+    justify-content: space-around;
+}
+
+.modal-body div button {
+    font-size: var(--font-size-l);
+    padding: 10px 20px;
+    background-color: #fff;
+    border-radius: var(--border-radius-s);
+}
+
+.modal-body div #create-btn {
+    color: var(--color-green);
+}
+
+.modal-body div #create-btn:hover {
+    background-color: #EEF8F0;
+    transition: background-color var(--hover-time);
+}
+
+.appear {
+    animation: fade-in .1s;
+    animation-fill-mode: forwards;
+    display: flex;
+}
+
+.disappear {
+    animation: fade-out .1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+
+    }
+    to {
+        opacity: 0;
+    }
 }

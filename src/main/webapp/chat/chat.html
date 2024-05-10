@@ -35,12 +35,15 @@
                 <span>user name</span>
             </button>
         </div>
-        <div id="side-btn"><div></div></div>
+        <div id="side-btn">
+            <div></div>
+        </div>
     </div>
     <div id="temp"></div>
     <div id="content">
         <div id="content-header">
-            <button id="model-detail-btn" class="lgray-hover"><span>GPT4-turbo</span><img id="model-detail-icon" src="images/icons/under-arrow.png"></button>
+            <button id="model-detail-btn" class="lgray-hover"><span>GPT4-turbo</span><img id="model-detail-icon"
+                    src="images/icons/under-arrow.png"></button>
             <div id="detail-box">
                 <div id="stream">
                     <img class="detail-icons" id="stream-icon" src="images/icons/stream.png">
@@ -73,6 +76,20 @@
             <div id="textarea-container">
                 <textarea id="prompt-input" tabindex="0" dir="auto" rows="1" placeholder="Enter your prompt"></textarea>
                 <button id="prompt-button"><img id="prompt-button-icon" src="images/icons/upper-arrow.png"></button>
+            </div>
+        </div>
+    </div>
+    <div id="new-chat-modal" class="hidden">
+        <div class="modal-body">
+            <h2>Create New Chat</h2>
+            <div class="select-div">
+                <p>새로운 채팅을 만드시려면 모델을 선택해 주세요.</p>
+                <select id="model-select">
+                </select>
+            </div>
+            <div>
+                <button id="modal-cancel" class="lgray-hover">Cancel</button>
+                <button id="create-btn">Create</button>
             </div>
         </div>
     </div>

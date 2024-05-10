@@ -8,7 +8,7 @@ import lombok.ToString;
 public class ChatDTO {
 
 	private int chat_id;
-	private String user_id;
+	private String user_email;
 	private String model;
 	private String name;
 	private boolean stream_enabled;

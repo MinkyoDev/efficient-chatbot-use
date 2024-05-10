@@ -1,5 +1,6 @@
+const baseUrl = getAbsoluteURL(window.location.href);
 
-
+// sign up
 export function duplicationCheck(email, message) {
 	$.ajax({
 		type: "post",
@@ -18,6 +19,7 @@ export function duplicationCheck(email, message) {
 	return message;
 }
 
+// sign in
 export function validCheck(email, pw, message) {
 	var data = { "email": email, "password": pw };
 	$.ajax({
@@ -39,24 +41,60 @@ export function validCheck(email, pw, message) {
 	return message;
 }
 
-export function getAnswer(content) {
-	var baseUrl = getAbsoluteURL(window.location.href);
-	console.log(baseUrl);
-
-	var data = { "content": content };
-	$.ajax({
-		type: "post",
-		url: baseUrl + "/api/v1/chatting",
-		async: false,
-		data: JSON.stringify(data),
-		success: function(response) {
-			console.log(response);
-		},
-		error: function(error) {
-			console.log(error);
-		}
-	})
+// chat load
+export async function getModelList() {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			type: "get",
+			url: baseUrl + "/api/v1/model-list",
+			async: true,
+			success: function(response) {
+				resolve(response);
+			},
+			error: function(error) {
+				reject(error);
+			}
+		});
+	});
 }
+
+export async function getChatList() {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			type: "get",
+			url: baseUrl + "/api/v1/chat-list",
+			async: true,
+			success: function(response) {
+				resolve(response);
+			},
+			error: function(error) {
+				reject(error);
+			}
+		});
+	});
+}
+
+// chatting
+export async function getAnswer(content) {
+	var data = { "content": content };
+	
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			type: "post",
+			url: baseUrl + "/api/v1/chatting",
+			async: true,
+			contentType: "application/json",
+			data: JSON.stringify(data),
+			success: function(response) {
+				resolve(response.answer);
+			},
+			error: function(error) {
+				reject(error);
+			}
+		});
+	});
+}
+
 
 function getAbsoluteURL(currentUrl) {
 	var firstSlashIndex = currentUrl.indexOf('/', currentUrl.indexOf('//') + 2);
