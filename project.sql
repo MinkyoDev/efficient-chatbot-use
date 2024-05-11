@@ -166,12 +166,33 @@ END;
 insert into models values ('gpt-3.5-turbo-1106', 'openAI', 0.0010/1000, 0.0020/1000);
 insert into models values ('gpt-4', 'openAI', 0.03/1000, 0.06/1000);
 insert into models values ('gpt-4-1106-preview', 'openAI', 0.01/1000, 0.03/1000);
+insert into models values ('gpt-4-turbo', 'openAI', 10/1000000, 30/1000000);
 commit;
 
 insert into users (email, nicname, password) values ('11', '1111', '1111');
 commit;
 
-select * from users;
+select * from chat_log;
+
+select * from chat;
+
+SELECT * FROM Chat_log WHERE chat_id = 9 AND EXISTS (SELECT 1 FROM Chat WHERE user_email = '11' AND Chat.chat_id = Chat_log.chat_id);
+
+SELECT COUNT(*) count FROM Chat_log WHERE chat_id = 9;
+
+SELECT c.*, cl.create_at AS last_modified_at
+FROM Chat c
+LEFT JOIN (
+    SELECT chat_id, MAX(create_at) AS create_at
+    FROM Chat_log
+    GROUP BY chat_id
+) cl ON c.chat_id = cl.chat_id
+WHERE c.user_email = '11' AND cl.create_at IS NOT NULL
+ORDER BY last_modified_at DESC;
+
+
+
+
 
 --insert into chat (chat_id, user_email, model, memory_enabled, ceche_enabled) values (chatid_seq.nextVal, '11', 'gpt-3.5-turbo-1106', 1, 1);
 --rollback;

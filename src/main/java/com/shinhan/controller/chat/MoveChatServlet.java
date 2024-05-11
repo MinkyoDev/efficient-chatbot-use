@@ -8,26 +8,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.shinhan.domain.dto.UserDTO;
-import com.shinhan.service.ChatService;
-
-@WebServlet("/chat/new-chat")
-public class CreateChatServlet extends HttpServlet {
+@WebServlet("/chat/move-chat")
+public class MoveChatServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String modelName = request.getParameter("modelName");
+		String chatId = request.getParameter("chatId");
 
-		HttpSession session = request.getSession();
-		UserDTO user = (UserDTO) session.getAttribute("user");
-
-		ChatService chatService = new ChatService();
-		int chatId = chatService.insertChat(user.getEmail(), modelName, false, true, true);
-
-		Cookie cookie = new Cookie("chatId", String.valueOf(chatId));
+		Cookie cookie = new Cookie("chatId", chatId);
 		cookie.setMaxAge(24 * 3600);
 
 		response.addCookie(cookie);

@@ -9,6 +9,7 @@ import lombok.ToString;
 @Getter@Setter@ToString
 public class ChatLogDTO {
 
+	private int log_id;
 	private int chat_id;
 	private int history_id;
 	private String model_name;
