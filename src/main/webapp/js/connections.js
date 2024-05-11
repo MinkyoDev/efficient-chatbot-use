@@ -74,10 +74,32 @@ export async function getChatList() {
 	});
 }
 
+export async function getDetails() {
+	var chatId = getCookie('chatId');
+
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			type: "get",
+			url: `${baseUrl}/api/v1/chat-details?chatId=${chatId}`,
+			async: true,
+			xhrFields: {
+				withCredentials: true
+			},
+			success: function(response) {
+				resolve(response);
+			},
+			error: function(error) {
+				reject(error);
+			}
+		});
+	});
+}
+
 // chatting
 export async function getAnswer(content) {
-	var data = { "content": content };
-	
+	var chatId = getCookie('chatId');
+	var data = { "content": content, "chatId": chatId };
+
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			type: "post",
@@ -101,4 +123,15 @@ function getAbsoluteURL(currentUrl) {
 	var secondSlashIndex = currentUrl.indexOf('/', firstSlashIndex + 1);
 	var baseUrl = currentUrl.substring(0, secondSlashIndex);
 	return baseUrl;
+}
+
+function getCookie(name) {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.startsWith(name + '=')) {
+            return cookie.substring(name.length + 1);
+        }
+    }
+    return null;
 }

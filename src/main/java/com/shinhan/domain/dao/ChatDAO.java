@@ -49,7 +49,7 @@ public class ChatDAO {
 	// select
 	public List<ChatDTO> selectAll(String userEmail) {
 		List<ChatDTO> chatList = new ArrayList<>();
-		String sql = "select * from chat where user_email = ?";
+		String sql = "select * from chat where user_email = ? order by chat_id desc";
 		conn = DBUtil.dbConnection();
 		try {
 			pst = conn.prepareStatement(sql);
@@ -57,6 +57,35 @@ public class ChatDAO {
 			rs = pst.executeQuery();
 			while (rs.next()) {
 				ChatDTO chat = makeChat(rs);
+				chatList.add(chat);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.dbDisconnect(conn, st, rs);
+		}
+		return chatList;
+	}
+	
+	public List<ChatDTO> selectAllOrderByModified(String userEmail) {
+		List<ChatDTO> chatList = new ArrayList<>();
+		String sql = "SELECT c.*, cl.create_at AS last_modified_at\r\n"
+		+ "FROM Chat c\r\n"
+		+ "LEFT JOIN (\r\n"
+		+ "    SELECT chat_id, MAX(create_at) AS create_at\r\n"
+		+ "    FROM Chat_log\r\n"
+		+ "    GROUP BY chat_id\r\n"
+		+ ") cl ON c.chat_id = cl.chat_id\r\n"
+		+ "WHERE c.user_email = ? AND cl.create_at IS NOT NULL\r\n"
+		+ "ORDER BY last_modified_at DESC";
+		conn = DBUtil.dbConnection();
+		try {
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, userEmail);
+			rs = pst.executeQuery();
+			while (rs.next()) {
+				ChatDTO chat = makeChat(rs);
+				chat.setLast_modified_at(rs.getDate("last_modified_at"));
 				chatList.add(chat);
 			}
 		} catch (SQLException e) {

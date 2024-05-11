@@ -1,5 +1,7 @@
 package com.shinhan.domain.dto;
 
+import java.sql.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,4 +17,5 @@ public class ChatDTO {
 	private boolean memory_enabled;
 	private boolean ceche_enabled;
 
+	private Date last_modified_at;
 }

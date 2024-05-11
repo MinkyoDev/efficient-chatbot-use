@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
+import com.shinhan.service.ChatLogService;
 import com.shinhan.utils.JSONParsing;
-import com.shinhan.utils.OpenAIRequest;
 
 @WebServlet("/api/v1/chatting")
 public class ChatAPIServlet extends HttpServlet {
@@ -34,10 +34,12 @@ public class ChatAPIServlet extends HttpServlet {
 		}
 		System.out.println(json);
 		String content = (String) json.get("content");
+		int chatId = Integer.parseInt((String) json.get("chatId"));
 
 		String localPath = getServletContext().getRealPath("/");
-		OpenAIRequest openai = new OpenAIRequest();
-		String answer = openai.getChatbotResponse("gpt-3.5-turbo", content, localPath);
+		ChatLogService chatLogService = new ChatLogService();
+		String answer = chatLogService.getChatbotResponse(chatId, content, localPath);
+		
 
 		JSONObject responseData = new JSONObject();
 		responseData.put("answer", answer);

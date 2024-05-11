@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import com.shinhan.domain.dao.ChatDAO;
 import com.shinhan.domain.dao.ChatLogDAO;
 import com.shinhan.domain.dto.ChatDTO;
-import com.shinhan.domain.dto.LogDTO;
 import com.shinhan.utils.OpenAIRequest;
 
 public class ChatService {
@@ -24,10 +23,18 @@ public class ChatService {
 	public List<ChatDTO> getAllChats(String userEmail) {
 		return chatDAO.selectAll(userEmail);
 	}
-
-	public List<LogDTO> getLogByChatid(String userid, int chatid) {
-		return chatLogDAO.selectAllByChatIDUserID(userid, chatid);
+	
+	public List<ChatDTO> getAllOrderByModified(String userEmail) {
+		return chatDAO.selectAllOrderByModified(userEmail);
 	}
+	
+	public ChatDTO getChatById(int chatId) {
+		return chatDAO.selectByChatid(chatId);
+	}
+
+//	public List<LogDTO> getLogByChatid(String userid, int chatid) {
+//		return chatLogDAO.selectAllByChatIDUserID(userid, chatid);
+//	}
 
 	public int deleteChat(String userid, int chatid) {
 		return chatDAO.deleteChat(userid, chatid);
