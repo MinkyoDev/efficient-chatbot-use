@@ -39,7 +39,7 @@ public class SignInServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.setAttribute("user", userService.getUser(email));
 
-		response.sendRedirect("../chat");
+		response.sendRedirect("../chat/chat");
 	}
 
 }

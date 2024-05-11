@@ -1,3 +1,20 @@
+export function getCookie(name) {
+	var cookies = document.cookie.split(';');
+	for (var i = 0; i < cookies.length; i++) {
+		var cookie = cookies[i].trim();
+		if (cookie.startsWith(name + '=')) {
+			return cookie.substring(name.length + 1);
+		}
+	}
+	return null;
+}
+
+export function getAbsoluteURL(currentUrl) {
+	var firstSlashIndex = currentUrl.indexOf('/', currentUrl.indexOf('//') + 2);
+	var secondSlashIndex = currentUrl.indexOf('/', firstSlashIndex + 1);
+	var baseUrl = currentUrl.substring(0, secondSlashIndex);
+	return baseUrl;
+}
 
 export function getCookieValue(cookieName) {
 	var name = cookieName + "=";
@@ -30,15 +47,25 @@ export function getSideVarDisplay() {
 	return false;
 }
 
-// 쿠키에서 myCookie 값을 가져옴
-var cookieValue = getCookieValue("myCookie");
+export function setSideVarDisplay(bool) {
+	document.cookie = "svDisplay=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-// 문자열 "true"나 "false"를 실제 boolean 값으로 변환
-var myBooleanValue = cookieValue === "true";
+	var expirationDate = new Date();
+	expirationDate.setTime(expirationDate.getTime() + (24 * 60 * 60 * 1000));
+	var expires = "expires=" + expirationDate.toUTCString();
 
-// myBooleanValue를 사용하여 작업 수행
-if (myBooleanValue) {
-	// true일 때 실행할 코드
-} else {
-	// false일 때 실행할 코드
+	console.log(`svDisplay=${bool}; ` + expires);
+	if (bool) {
+		document.cookie = "svDisplay=true; " + expires;
+	} else {
+		document.cookie = "svDisplay=false; " + expires;
+	}
+}
+
+export function getParentPath(currentUrl, num) {
+	var urlArray = currentUrl.split('/');
+	for (let i = 0; i < num; i++) {
+		urlArray.pop();
+	}
+	return urlArray.join('/');
 }

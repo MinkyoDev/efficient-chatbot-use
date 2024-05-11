@@ -114,6 +114,27 @@ public class ChatDAO {
 		}
 		return chat;
 	}
+	
+//	searchValidChatId
+	public ChatDTO selectByEmailandChatId(String userEmail, int Chat) {
+		ChatDTO chat = null;
+		String sql = "select * from chat where user_email = ? and chat_id = ?";
+		conn = DBUtil.dbConnection();
+		try {
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, userEmail);
+			pst.setInt(2, Chat);
+			rs = pst.executeQuery();
+			while (rs.next()) {
+				chat = makeChat(rs);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.dbDisconnect(conn, st, rs);
+		}
+		return chat;
+	}
 
 	// update
 	public int updateName(int chatid, String name) {
@@ -136,7 +157,7 @@ public class ChatDAO {
 	// delete
 	public int deleteChat(String userid, int chatid) {
 		int result = 0;
-		String sql = "DELETE FROM chat WHERE chat_id = ? and user_id = ?";
+		String sql = "DELETE FROM chat WHERE chat_id = ? and user_email = ?";
 		conn = DBUtil.dbConnection();
 		try {
 			pst = conn.prepareStatement(sql);

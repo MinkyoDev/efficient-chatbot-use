@@ -162,6 +162,15 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE TRIGGER After_Insert_User
+AFTER INSERT
+ON Users
+FOR EACH ROW
+BEGIN
+    INSERT INTO chat (chat_id, user_email, model, stream_enabled, memory_enabled, ceche_enabled) VALUES (chatid_seq.nextVal, :NEW.email, 'gpt-3.5-turbo-1106', 0, 1, 1);
+END;
+/
+
 -- 데이터 넣기
 insert into models values ('gpt-3.5-turbo-1106', 'openAI', 0.0010/1000, 0.0020/1000);
 insert into models values ('gpt-4', 'openAI', 0.03/1000, 0.06/1000);
@@ -170,6 +179,7 @@ insert into models values ('gpt-4-turbo', 'openAI', 10/1000000, 30/1000000);
 commit;
 
 insert into users (email, nicname, password) values ('11', '1111', '1111');
+insert into users (email, nicname, password) values ('22', '2222', '22');
 commit;
 
 select * from chat_log;

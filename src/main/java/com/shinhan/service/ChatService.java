@@ -39,6 +39,10 @@ public class ChatService {
 	public int deleteChat(String userid, int chatid) {
 		return chatDAO.deleteChat(userid, chatid);
 	}
+	
+	public ChatDTO searchValidChatId(String userEmail, int chatId) {
+		return chatDAO.selectByEmailandChatId(userEmail, chatId);
+	}
 
 	public ChatDTO makeChat(String userEmail, String modelName, boolean stream, boolean memory, boolean cache) {
 		ChatDTO chat = new ChatDTO();

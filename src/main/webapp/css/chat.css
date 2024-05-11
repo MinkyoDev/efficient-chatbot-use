@@ -2,6 +2,7 @@
 	--side-bar-width: 230px;
 	--side-bar-height: 98vh;
 	--side-bar-transform: 1vw;
+	--side-bar-padding: 15px;
 	--content-width: 60vw;
 	--content-height: 100vh;
 	--content-width-min: 380px;
@@ -33,11 +34,31 @@ body {
 	text-align: center;
 	color: var(--color-black);
 	display: flex;
+	overflow: auto;
+}
+
+body::-webkit-scrollbar {
+    width: 6px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--color-lgray);
+    border-radius: 10px;
+}
+
+body::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 10px;
 }
 
 button {
 	background-color: var(--color-lgray);
 	border: none;
+}
+
+button:disabled {
+    background-color: var(--color-mgray);
+    color: var(--color-black);
 }
 
 .mgray-hover {
@@ -62,17 +83,17 @@ button {
 	width: var(--side-bar-width);
 	height: var(--side-bar-height);
 	background-color: var(--color-lgray);
-	padding: 20px;
-	padding-top: 40px;
+	padding-top: 30px;
 	position: fixed;
 	top: 1vh;
 	left: var(--side-bar-transform);
 	border-radius: var(--border-radius-xl);
-	/* transform: translate(var(--side-bar-transform), 0); */
-	/* transform: translate(calc(var(--side-bar-width) * -1), 0); */
-	transition: .2s;
 	display: flex;
 	flex-direction: column;
+}
+
+#new-chat-box {
+	padding: var(--side-bar-padding);
 }
 
 #new-chat-btn {
@@ -95,27 +116,53 @@ button {
 	vertical-align: middle;
 }
 
+#chat-list-box {
+	height: 80vh;
+	margin: 10px 0;
+	padding: 0 var(--side-bar-padding);
+	overflow: hidden;
+}
+
+#chat-list-box:hover {
+	overflow: auto;
+}
+
+#chat-list-box::-webkit-scrollbar {
+    width: 5px;
+}
+
+#chat-list-box::-webkit-scrollbar-thumb {
+    background-color: var(--color-hgray);
+    border-radius: 10px;
+}
+
+#chat-list-box::-webkit-scrollbar-track {
+    background-color: var(--color-lgray);
+    border-radius: 10px;
+}
+
 #chat-list {
-	list-style-type: none;
-	margin: 30px 0;
+	list-style-type: none;	
 }
 
 #chat-list li button {
 	font-size: var(--font-size-s);
 	width: 100%;
 	text-align: left;
-	margin: 5px 0;
-	padding: 5px 20px;
+	margin: 2px 0;
+	padding: 8px 20px;
 	border-radius: var(--border-radius-s);
 	cursor: pointer;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	display: flex;
 }
 
 #user-setting-area {
 	margin-top: auto;
 	position: relative;
+	padding: var(--side-bar-padding);
 }
 
 #user-btn {
@@ -198,10 +245,10 @@ button {
 
 #side-btn {
 	position: absolute;
-	width: 10%;
+	width: 12%;
 	top: 50%;
 	left: 100%;
-	height: 50px;
+	height: 65px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -209,7 +256,7 @@ button {
 
 #side-btn div {
 	width: 7px;
-	height: 30px;
+	height: 35px;
 	border-radius: 30px;
 	background-color: var(--color-lgray);
 	transition: background-color var(--hover-time);
@@ -225,7 +272,7 @@ button {
 	width: var(--side-bar-width);
 	/* width: 0; */
 	height: var(--content-height);
-	transition: width 0.2s;
+	/* transition: width 0.2s; */
 }
 
 #content {
@@ -351,9 +398,6 @@ button {
 .user-balloon {
 	max-width: 80%;
 	margin-left: auto;
-	transform-origin: top right;
-	transition: all 0.5s linear;
-	transform: scale(1.0, 1.0);
 }
 
 .user-balloon div {
@@ -378,20 +422,17 @@ button {
 
 .assistant-balloon {
 	max-width: 80%;
-	transform-origin: top left;
-	transition: all 0.5s linear;
-	transform: scale(1.0, 1.0);
 }
 
 .assistant-balloon div {
 	background-color: var(--color-lgray);
 }
 
-.assistant-balloon::before {
+.assistant-balloon div::before {
 	content: "";
 	position: absolute;
 	bottom: 0;
-	left: 10px;
+	left: -10px;
 	border-left: 20px solid transparent;
 	border-right: 20px solid transparent;
 	border-top: 20px solid transparent;
@@ -417,20 +458,25 @@ button {
 }
 
 /* ballon animation */
-@
-keyframes balloon-rise {from { transform:scale(0);
-	opacity: 0;
+@keyframes balloon-rise {
+	from {
+		transform: scale(0);
+	}
+
+	to {
+		transform: scale(1);
+	}
+
 }
 
-to {
-	transform: scale(1);
-	opacity: 1;
-}
-
-}
-.balloon-rise {
+.balloon-rise-r {
 	transform-origin: bottom right;
-	animation: balloon-rise 0.4s ease-out forwards;
+	animation: balloon-rise .5s ease forwards;
+}
+
+.balloon-rise-l {
+	transform-origin: bottom left;
+	animation: balloon-rise .5s ease forwards;
 }
 
 /* loding animation */
@@ -462,14 +508,14 @@ to {
 	animation-delay: .2s;
 }
 
-@
-keyframes scaleBounce {from { transform:scale(.7)
-	
-}
+@keyframes scaleBounce {
+	from {
+		transform: scale(.7)
+	}
 
-to {
-	transform: scale(1.3)
-}
+	to {
+		transform: scale(1.3)
+	}
 
 }
 
@@ -536,7 +582,7 @@ to {
 
 /* ========== new chat modal ========== */
 #new-chat-modal {
-	position: absolute;
+	position: fixed;
 	/* display: flex; */
 	justify-content: center;
 	top: 0;
@@ -545,7 +591,6 @@ to {
 	height: 100%;
 	z-index: 3;
 	background-color: rgba(0, 0, 0, 0.4);
-	/* transition: all var(--hover-time); */
 	transition: opacity 3s ease;
 }
 
@@ -595,8 +640,7 @@ to {
 	-moz-appearance: none;
 	/*for firefox*/
 	appearance: none;
-	background: url('../images/icons/dropdown.png') no-repeat 97% 50%/10px
-		7px;
+	background: url('../images/icons/dropdown.png') no-repeat 97% 50%/10px 7px;
 	background-color: var(--color-lgray);
 }
 
@@ -632,22 +676,25 @@ to {
 	animation-fill-mode: forwards;
 }
 
-@
-keyframes fade-in {from { opacity:0;
-	
+@keyframes fade-in {
+	from {
+		opacity: 0;
+
+	}
+
+	to {
+		opacity: 1;
+	}
+
 }
 
-to {
-	opacity: 1;
-}
+@keyframes fade-out {
+	from {
+		opacity: 1;
 
-}
-@
-keyframes fade-out {from { opacity:1;
-	
-}
+	}
 
-to {
-	opacity: 0;
-}
+	to {
+		opacity: 0;
+	}
 }

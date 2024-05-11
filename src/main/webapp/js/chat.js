@@ -1,11 +1,10 @@
-import { getAnswer, getModelList, getChatList, getDetails } from "./connections.js";
-import { getSideVarDisplay } from "./utils.js";
+import { getAnswer, getModelList, getChatList, getDetails, getUserData } from "./connections.js";
+import { getSideVarDisplay, setSideVarDisplay, getCookie, getParentPath } from "./utils.js";
 import { makeBallons } from "./chatting.js";
 
-console.log(getSideVarDisplay());
-var side_var_enabled = true;
-var icon_path = "images/icons"
-var assistantCount = 0;
+
+var side_var_enabled = getSideVarDisplay();
+
 
 $(document).ready(function() {
 	// component moving
@@ -19,28 +18,21 @@ $(document).ready(function() {
 
 	// load data
 	loadData();
-	// loadPreviousData();
-
-	// loadChatList();
-
-	// loadDetailIcon();
-
 
 });
 
 function initSideVar() {
-	console.log("initSideVar");
-	if (!side_var_enabled) {
-		$("#side-bar").css("transform", "translate(var(--side-bar-transform), 0)");
-		$("#side-bar").css("left", "0");
+	if (side_var_enabled) {
+		$("#side-bar").css("left", "var(--side-bar-transform)");
 		$("#temp").css("width", "var(--side-bar-width)");
 		side_var_enabled = true;
 	} else {
-		$("#side-bar").css("transform", "translate(calc(var(--side-bar-width) * -1), 0)");
-		$("#side-bar").css("left", "0");
+		$("#side-bar").css("left", "calc(var(--side-bar-width) * -1)");
 		$("#temp").css("width", "0");
 		side_var_enabled = false;
 	}
+	$("#side-bar").css("transition", "left .2s");
+	$("#temp").css("transition", "left .2s");
 }
 
 function autoTextareaHeight() {
@@ -56,19 +48,21 @@ function buttonClicks() {
 
 	function toggleSidebar() {
 		if (!side_var_enabled) {
-			$("#side-bar").css("transform", "translate(var(--side-bar-transform), 0)");
+			$("#side-bar").css("left", "var(--side-bar-transform)");
 			$("#temp").css("width", "var(--side-bar-width)");
 			side_var_enabled = true;
+			setSideVarDisplay(true);
 		} else {
-			$("#side-bar").css("transform", "translate(calc(var(--side-bar-width) * -1), 0)");
+			$("#side-bar").css("left", "calc(var(--side-bar-width) * -1)");
 			$("#temp").css("width", "0");
 			side_var_enabled = false;
+			setSideVarDisplay(false);
 		}
 	}
 
 	// log out button
 	$("#logout-btn").click(function() {
-		window.location.href = "auth/logout";
+		window.location.href = getParentPath(window.location.href, 2) + "/auth/logout";
 	});
 
 	// new chat button
@@ -91,9 +85,7 @@ function buttonClicks() {
 	// new chat modal create button
 	$("#create-btn").click(function() {
 		var modelName = $("#model-select").val();
-		var currentUrl = window.location.href;
-		var newUrl = currentUrl + "/new-chat?modelName=" + encodeURIComponent(modelName);
-		window.location.href = newUrl;
+		window.location.href = getParentPath(window.location.href, 1) + "/new-chat?modelName=" + encodeURIComponent(modelName);
 	})
 
 	function modalClose() {
@@ -171,9 +163,15 @@ function toggles() {
 }
 
 function loadData() {
+	loadUserData();
 	loadModelList();
 	loadChatList();
 	loadDetails();
+
+	async function loadUserData() {
+		var userData = await getUserData();
+		$("#user-btn span").html(userData.userNicname);
+	}
 
 	async function loadModelList() {
 		var modelList = await getModelList();
@@ -188,7 +186,6 @@ function loadData() {
 
 	async function loadChatList() {
 		var chatlList = await getChatList();
-		console.log(chatlList);
 
 		var chatListHtml = "";
 		chatlList.chats.forEach(function(item) {
@@ -200,13 +197,19 @@ function loadData() {
 		})
 		$("#chat-list").html(chatListHtml);
 
+		$("#chat-list li button").each(function() {
+			var chatId = getCookie('chatId');
+			var value = $(this).data("value")
+			if (value == chatId) {
+				$(this).prop("disabled", true);
+			}
+		});
+
 		// chat list button
 		$(document).ready(function() {
 			$("#chat-list li button").click(function() {
 				var chatId = $(this).data("value");
-				var currentUrl = window.location.href;
-				var newUrl = currentUrl + "/move-chat?chatId=" + encodeURIComponent(chatId);
-				window.location.href = newUrl;
+				window.location.href = getParentPath(window.location.href, 1) + "/move-chat?chatId=" + encodeURIComponent(chatId);
 			});
 		});
 
@@ -218,8 +221,11 @@ function loadData() {
 		// load previous chat
 		details.conversations.forEach(function(item) {
 			$("#new-chat-text").hide();
-			makeBallons("user", item.request);
-			makeBallons("assistant", item.response);
+			makeBallons("user", item.request, false);
+			makeBallons("assistant", item.response, false);
+
+			// scroll down
+			$("html, body").animate({ scrollTop: $(document).height() }, 0);
 		});
 
 		// load chat detail
@@ -230,11 +236,19 @@ function loadData() {
 				if (details.settings[key]) {
 					type = "check";
 				}
-				detailHTML += `<div id=${key}><img class="detail-icons" id="${key}-icon" src="images/icons/${key}.png"><span>${capitalizeFirstLetter(key)}</span><img class="status-icon" src="images/icons/${type}.png"></div>`
+				detailHTML += `<div id=${key}><img class="detail-icons" id="${key}-icon" src="../images/icons/${key}.png"><span>${capitalizeFirstLetter(key)}</span><img class="status-icon" src="../images/icons/${type}.png"></div>`
 			}
 		}
 		detailHTML += '<div id="delete"><button id="delete-btn" class="lgray-hover">Delete Chat</button></div>'
 		$("#detail-box").html(detailHTML);
+
+		// delete chat button
+		$(document).ready(function() {
+			$("#delete-btn").click(function() {
+				var chatId = getCookie('chatId');
+				window.location.href = getParentPath(window.location.href, 1) + "/delete-chat?chatId=" + encodeURIComponent(chatId);
+			});
+		});
 
 		// change model name
 		var modelName = details.settings.modelName.replace("gpt", "GPT")
@@ -250,30 +264,32 @@ function chatRequest() {
 	if (prompt == "" || $("#prompt-button").prop("disabled")) {
 		return;
 	}
-	var assistantId = createDivUniqueId();
 	makeBallons("user", prompt);
-	makeBallons("loding", "", assistantId);
+	var ballonId = makeBallons("loding", "");
 
 	console.log("start");
 	$("#prompt-button").prop("disabled", true);
-	answerCallback(prompt, assistantId);
+	answerCallback(prompt, ballonId);
 
 	console.log("end");
+
+	// scroll down
 	$("html, body").animate({ scrollTop: $(document).height() }, "slow");
+
 	$('#prompt-input').val("");
 	$('#prompt-input').css('height', 'auto')
 }
 
-function createDivUniqueId() {
-	assistantCount++;
-	return 'assistant_' + assistantCount;
-}
+
 
 async function answerCallback(prompt, assistantId) {
 	var answer = await getAnswer(prompt);
 	console.log(answer);
 	$("#prompt-button").prop("disabled", false);
 	$(`#${assistantId}`).html(answer);
+
+	// scroll down
+	$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 }
 
 function capitalizeFirstLetter(str) {
