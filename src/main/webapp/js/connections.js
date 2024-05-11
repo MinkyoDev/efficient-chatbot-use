@@ -1,3 +1,5 @@
+import { getCookie, getAbsoluteURL } from "./utils.js";
+
 const baseUrl = getAbsoluteURL(window.location.href);
 
 // sign up
@@ -42,6 +44,22 @@ export function validCheck(email, pw, message) {
 }
 
 // chat load
+export async function getUserData() {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			type: "get",
+			url: baseUrl + "/api/v1/user-data",
+			async: true,
+			success: function(response) {
+				resolve(response);
+			},
+			error: function(error) {
+				reject(error);
+			}
+		});
+	});
+}
+
 export async function getModelList() {
 	return new Promise((resolve, reject) => {
 		$.ajax({
@@ -115,23 +133,4 @@ export async function getAnswer(content) {
 			}
 		});
 	});
-}
-
-
-function getAbsoluteURL(currentUrl) {
-	var firstSlashIndex = currentUrl.indexOf('/', currentUrl.indexOf('//') + 2);
-	var secondSlashIndex = currentUrl.indexOf('/', firstSlashIndex + 1);
-	var baseUrl = currentUrl.substring(0, secondSlashIndex);
-	return baseUrl;
-}
-
-function getCookie(name) {
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i].trim();
-        if (cookie.startsWith(name + '=')) {
-            return cookie.substring(name.length + 1);
-        }
-    }
-    return null;
 }

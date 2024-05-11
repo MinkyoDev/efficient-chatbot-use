@@ -21,7 +21,7 @@ public class MoveChatServlet extends HttpServlet {
 		cookie.setMaxAge(24 * 3600);
 
 		response.addCookie(cookie);
-		response.sendRedirect("../chat");
+		response.sendRedirect("chat");
 	}
 
 }
