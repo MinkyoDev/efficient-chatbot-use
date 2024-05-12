@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/favicon.png"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link href="../css/chat.css" rel="stylesheet">
     <script type="module" src="../js/chat.js"></script>
-    <title>Document</title>
+    <title>ECU chat</title>
 </head>
 
 <body>
@@ -25,9 +26,9 @@
         <div id="user-setting-area">
             <div id="user-setting-box">
                 <div>
-                    <button id="setting-btn" class="lgray-hover">setting</button>
+                    <button id="setting-btn" class="lgray-hover">Setting</button>
                     <hr>
-                    <button id="logout-btn" class="lgray-hover">logout</button>
+                    <button id="logout-btn" class="lgray-hover">Logout</button>
                 </div>
             </div>
             <button id="user-btn" class="mgray-hover">
@@ -64,7 +65,7 @@
             </div>
         </div>
     </div>
-    <div id="new-chat-modal" class="hidden">
+    <div id="new-chat-modal" class="modal hidden">
         <div class="modal-body">
             <h2>Create New Chat</h2>
             <div class="select-div">
@@ -73,8 +74,31 @@
                 </select>
             </div>
             <div>
-                <button id="modal-cancel" class="lgray-hover">Cancel</button>
-                <button id="create-btn">Create</button>
+                <button class="modal-cancel lgray-hover">Cancel</button>
+                <button id="create-btn" class="submit-btn">Create</button>
+            </div>
+        </div>
+    </div>
+    <div id="setting-modal" class="modal hidden">
+        <div id="setting-modal" class="modal-body">
+            <h2>Setting</h2>
+            <div id="user-setting">
+                <p>User</p>
+                <div>
+                    <button id="change-pw-btn" class="lgray-hover">비밀번호 변경</button>
+                    <button id="withdraw-btn" class="lgray-hover">회원 탈퇴</button>
+                </div>
+            </div>
+            <div id="Key-setting">
+                <p>Key</p>
+                <div>
+                    <input type="text" placeholder="Enter your key">
+                    <p>키를 입력하시면 제한없이 사용가능합니다</p>
+                </div>
+            </div>
+            <div>
+                <button class="modal-cancel lgray-hover">Cancel</button>
+                <button class="submit-btn">Save</button>
             </div>
         </div>
     </div>

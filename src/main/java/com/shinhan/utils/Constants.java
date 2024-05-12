@@ -6,5 +6,7 @@ public final class Constants {
 	
 	public static final int BEFORE_LOGS = 3;
 	
+	public static final String DEFAULT_MODEL_NAME = "gpt-3.5-turbo-1106";
+
 	public static final String MODEL_NAME_FOR_SUMMARY = "gpt-4-1106-preview";
 }

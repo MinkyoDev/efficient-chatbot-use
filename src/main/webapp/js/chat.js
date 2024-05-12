@@ -87,9 +87,26 @@ function buttonClicks() {
 		var modelName = $("#model-select").val();
 		window.location.href = getParentPath(window.location.href, 1) + "/new-chat?modelName=" + encodeURIComponent(modelName);
 	})
+	
+	// setting modal create button
+	$("#setting-btn").click(function() {
+		$("#setting-modal").addClass("appear");
+		$("#setting-modal").removeClass("disappear");
+	})
+
+	// new chat modal cancel button
+	$(".modal-cancel").click(function() {
+		modalClose();
+	})
+
+	$("#setting-modal").click(function(event) {
+		if (!$(event.target).closest(".modal-body").length) {
+			modalClose();
+		}
+	})
 
 	function modalClose() {
-		const target = $("#new-chat-modal");
+		const target = $(".modal");
 		if (target.hasClass('appear')) {
 			target.addClass('disappear');
 			setTimeout(function() {
@@ -109,6 +126,14 @@ function buttonClicks() {
 			chatRequest();
 		}
 	});
+	
+	// change password button
+	$("#change-pw-btn").click(function(){
+		console.log("change-pw-btn");
+		console.log(getParentPath(window.location.href, 2) + "/auth/change-password");
+		window.location.href = getParentPath(window.location.href, 2) + "/auth/change-password";
+	});
+	
 }
 
 function toggles() {

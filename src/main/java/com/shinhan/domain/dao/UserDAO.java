@@ -41,7 +41,7 @@ public class UserDAO {
 	// update
 	public int updateUser(UserDTO user) {
 		int result = 0;
-		String sql = "update users set password = ?, is_active = 1 where id = ?";
+		String sql = "update users set password = ?, is_active = 1 where email = ?";
 		conn = DBUtil.dbConnection();		
 		try {
 			pst = conn.prepareStatement(sql);
