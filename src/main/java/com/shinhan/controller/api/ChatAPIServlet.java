@@ -32,7 +32,6 @@ public class ChatAPIServlet extends HttpServlet {
 			response.getWriter().write("Error parsing JSON data!");
 			return;
 		}
-		System.out.println(json);
 		String content = (String) json.get("content");
 		int chatId = Integer.parseInt((String) json.get("chatId"));
 

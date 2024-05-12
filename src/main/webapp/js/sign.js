@@ -1,49 +1,16 @@
 
 import { signUp } from './sign_up.js';
 import { signIn } from './sign_in.js';
+import { changePw } from './change_pw.js';
 
 
 $(document).ready(function() {
 	signUp();
 	signIn();
-	// duplication_check('Alice');
+	changePw();
 	change_input_style();
-	// check_submit();
 	etc();
 });
-
-// function check_submit() {
-//     $("form").submit(function (event) {
-//         var email = $('#email').val();
-//         var pw = $('#password').val();
-
-//         $("#email-alter").css("display", "none");
-//         $("#pw-alter").css("display", "none");
-
-//         if (email == "" && pw == "") {
-//             $("#email-alter").text("Email을 입력해 주세요.");
-//             $("#pw-alter").text("비밀번호를 입력해 주세요.");
-//             $("#email-alter").css("display", "block");
-//             $("#pw-alter").css("display", "block");
-//             event.preventDefault();
-//             return;
-//         }
-
-//         if (email == "") {
-//             $("#email-alter").text("Email을 입력해 주세요.");
-//             $("#email-alter").css("display", "block");
-//             event.preventDefault();
-//             return;
-//         }
-
-//         if (pw == "") {
-//             $("#pw-alter").text("비밀번호를 입력해 주세요.");
-//             $("#pw-alter").css("display", "block");
-//             event.preventDefault();
-//             return;
-//         }
-//     });
-// }
 
 function change_input_style() {
 	$('.input-wrapper input').focus(function() {
@@ -63,13 +30,7 @@ function change_input_style() {
 }
 
 function etc() {
-	//$(document).ready(function() {
-		//$('#email').on('input', function() {
-			//$(this).val($(this).val().replace(/[^A-Za-z0-9!@#$%^&*()_+{}\[\]:;<>,.?\/\\|= \-]/g, ''));
-		//});
-	//});
-
 	$("#google-login").click(function() {
-		alert("구글 로그인은 몰라");
+		alert("구글 로그인은 아직 지원하지 않습니다.");
 	})
 }

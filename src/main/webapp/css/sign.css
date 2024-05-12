@@ -176,3 +176,8 @@ h1 {
     display: none;
     font-size: 14px;
 }
+
+#pw-change-alter {
+    display: flex;
+    color: #333232;
+}

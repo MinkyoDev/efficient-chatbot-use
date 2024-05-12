@@ -41,6 +41,8 @@ public class DeleteChatServlet extends HttpServlet {
 		List<ChatDTO> chatListModified = chatService.getAllOrderByModified(user.getEmail());
 		List<ChatDTO> chatList = chatService.getAllChats(user.getEmail());
 
+		// chatList이 없을 때 예외처리 하기
+		
 		System.out.println(chatList);
 		int chatId = 0;
 		if (chatListModified.size() == 0) {

@@ -78,18 +78,10 @@ public class UserService {
 //		return "회원가입을 성공하였습니다.";
 //	}
 
-	public String updatePassword(String id, String newPassword) {
-		// password 유효성 확인
-		if (!passwordValidator(newPassword)) {
-			return "비밀번호는 영문과 숫자로만 이루어져야하며 4자리 이상이여야 합니다.";
-		}
-
+	public int updatePassword(String userEmail, String userNicname, String newPassword) {
 		// password 변경
-//		int result = userDAO.updateUser(makeUser(id, newPassword));
-//		if (result == 0) {
-//			return "회원정보가 저장되지 않았습니다. DB error";
-//		}
-		return "성공적으로 비밀번호가 변경되었습니다.";
+		UserDTO updateUser =userDAO.makeUser(userEmail, userNicname, newPassword);
+		return userDAO.updateUser(updateUser);
 	}
 
 	public int deleteByID(String id) {

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.shinhan.domain.dto.ChatDTO;
 import com.shinhan.domain.dto.UserDTO;
 import com.shinhan.service.ChatService;
+import com.shinhan.utils.Constants;
 import com.shinhan.utils.CookieUtils;
 
 @WebServlet("/chat/chat")
@@ -26,19 +27,15 @@ public class ChatServlet extends HttpServlet {
 		UserDTO user = (UserDTO) request.getSession().getAttribute("user");
 
 		String chatId_s = cookies.get("chatId");
-		System.out.println("chatId_s: " + chatId_s);
 		int chatId = 0;
 		if (chatId_s == null) {
 			chatId = getLastChatId(user);
 		} else {
-			System.out.println("getLastChatId(user): " + getLastChatId(user));
-			chatId = validChatId(chatId, user) != null ? Integer.parseInt(chatId_s) : getLastChatId(user);
+			chatId = Integer.parseInt(chatId_s);
+			chatId = validChatId(chatId, user) != null ? chatId : getLastChatId(user);
 		}
-		
-		System.out.println("chatId: " + chatId);
 		Cookie cookie = new Cookie("chatId", String.valueOf(chatId));
 		cookie.setMaxAge(24 * 3600);
-//		cookie.setPath("/chat");
 		response.addCookie(cookie);
 
 		request.getRequestDispatcher("/chat/chat.html").forward(request, response);
@@ -50,7 +47,6 @@ public class ChatServlet extends HttpServlet {
 
 	private ChatDTO validChatId(int chatId, UserDTO user) {
 		return new ChatService().searchValidChatId(user.getEmail(), chatId);
-
 	}
 
 	private int getLastChatId(UserDTO user) {
@@ -58,8 +54,14 @@ public class ChatServlet extends HttpServlet {
 		List<ChatDTO> chatListModified = chatService.getAllOrderByModified(user.getEmail());
 		List<ChatDTO> chatList = chatService.getAllChats(user.getEmail());
 
-		System.out.println(chatList);
 		int chatId = 0;
+
+		// chat 하나도 없으면 디폴트로 하나 생성
+		if (chatList.size() == 0) {
+			chatId = chatService.insertChat(user.getEmail(), Constants.DEFAULT_MODEL_NAME, false, true, true);
+			return chatId;
+		}
+
 		if (chatListModified.size() == 0) {
 			chatId = chatList.get(0).getChat_id();
 		} else {

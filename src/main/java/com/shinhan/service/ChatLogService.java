@@ -31,7 +31,6 @@ public class ChatLogService {
 		} else {
 			prompt = input; // 값을 변경하지 않음
 		}
-		System.out.println("prompt_o: " + prompt);
 
 		// 답변 생성
 		HashMap<String, String> result = openAIRequest.getChatbotResponse(chat.getModel(), prompt, localPath);

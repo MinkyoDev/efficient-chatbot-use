@@ -1,34 +1,29 @@
-import { duplicationCheck } from "./connections.js";
 
-export function signUp() {
-	$("#sign-up-form").submit(submitValidation)
+export function changePw() {
+	$("#chane-pw-form").submit(submitValidation)
 }
 
 function submitValidation(event) {
-	$("#email-alter").css("display", "none");
+	console.log("ddd");
 	$("#pw-alter").css("display", "none");
 
-	var email = $('#email').val();
 	var pw = $('#password').val();
 
 	var message = { email: "", pw: "" };
 	var isOk = false;
 
 	try {
-		message, isOk = validationCheck(email, pw, message);
+		message, isOk = validationCheck("", pw, message);
 	} catch (err) {
 		console.log("validationCheck error");
 		console.log(err);
 	}
 	console.log(message);
 
-	if (message.email != "") {
-		$("#email-alter").text(message.email);
-		$("#email-alter").css("display", "block");
-	}
 	if (message.pw != "") {
-		$("#pw-alter").text(message.pw);
-		$("#pw-alter").css("display", "block");
+		$("#pw-change-alter").text(message.pw);
+		$("#pw-change-alter").css("display", "block");
+		$("#pw-change-alter").css("color", "#FA5252");
 	}
 
 	if (!isOk) {
@@ -39,15 +34,11 @@ function submitValidation(event) {
 
 function validationCheck(email, pw, message) {
 	message = blankCheck(email, pw, message);
-	if (message.email !== "" || message.pw !== "") {
+	if (message.pw !== "") {
 		return message, false;
 	};
 	message = formatCheck(email, pw, message);
-	if (message.email !== "" || message.pw !== "") {
-		return message, false;
-	};
-	message = duplicationCheck(email, message);
-	if (message.email !== "" || message.pw !== "") {
+	if (message.pw !== "") {
 		return message, false;
 	};
 

@@ -200,7 +200,7 @@ LEFT JOIN (
 WHERE c.user_email = '11' AND cl.create_at IS NOT NULL
 ORDER BY last_modified_at DESC;
 
-
+select * from chat where user_email = '11' and chat_id = '23';
 
 
 

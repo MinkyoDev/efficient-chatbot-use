@@ -38,17 +38,17 @@ body {
 }
 
 body::-webkit-scrollbar {
-    width: 6px;
+	width: 6px;
 }
 
 body::-webkit-scrollbar-thumb {
-    background-color: var(--color-lgray);
-    border-radius: 10px;
+	background-color: var(--color-lgray);
+	border-radius: 10px;
 }
 
 body::-webkit-scrollbar-track {
-    background-color: #fff;
-    border-radius: 10px;
+	background-color: #fff;
+	border-radius: 10px;
 }
 
 button {
@@ -57,8 +57,8 @@ button {
 }
 
 button:disabled {
-    background-color: var(--color-mgray);
-    color: var(--color-black);
+	background-color: var(--color-mgray);
+	color: var(--color-black);
 }
 
 .mgray-hover {
@@ -128,21 +128,21 @@ button:disabled {
 }
 
 #chat-list-box::-webkit-scrollbar {
-    width: 5px;
+	width: 5px;
 }
 
 #chat-list-box::-webkit-scrollbar-thumb {
-    background-color: var(--color-hgray);
-    border-radius: 10px;
+	background-color: var(--color-hgray);
+	border-radius: 10px;
 }
 
 #chat-list-box::-webkit-scrollbar-track {
-    background-color: var(--color-lgray);
-    border-radius: 10px;
+	background-color: var(--color-lgray);
+	border-radius: 10px;
 }
 
 #chat-list {
-	list-style-type: none;	
+	list-style-type: none;
 }
 
 #chat-list li button {
@@ -156,7 +156,7 @@ button:disabled {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	display: flex;
+	display: block;
 }
 
 #user-setting-area {
@@ -322,7 +322,7 @@ button:disabled {
 	box-sizing: border-box;
 	position: absolute;
 	top: 90%;
-	width: 30%;
+	width: 200px;
 	padding: 10px 20px;
 	background-color: #fff;
 	border-radius: var(--border-radius-m);
@@ -580,8 +580,8 @@ button:disabled {
 	margin: auto;
 }
 
-/* ========== new chat modal ========== */
-#new-chat-modal {
+/* ========== modals ========== */
+.modal {
 	position: fixed;
 	/* display: flex; */
 	justify-content: center;
@@ -603,8 +603,6 @@ button:disabled {
 	box-sizing: border-box;
 	position: absolute;
 	top: 50%;
-	width: 400px;
-	height: 300px;
 	padding: 40px;
 	text-align: center;
 	background-color: #fff;
@@ -620,49 +618,6 @@ button:disabled {
 .modal-body h2 {
 	font-size: var(--font-size-xxl);
 	margin-bottom: 40px;
-}
-
-.modal-body .select-div {
-	display: flex;
-	flex-direction: column;
-}
-
-#model-select {
-	width: 100%;
-	padding: 10px 20px;
-	margin: 20px 0;
-	border: none;
-	font-size: var(--font-size-s);
-	border-radius: var(--border-radius-m);
-	text-align: center;
-	-webkit-appearance: none;
-	/* for chrome */
-	-moz-appearance: none;
-	/*for firefox*/
-	appearance: none;
-	background: url('../images/icons/dropdown.png') no-repeat 97% 50%/10px 7px;
-	background-color: var(--color-lgray);
-}
-
-.modal-body div {
-	display: flex;
-	justify-content: space-around;
-}
-
-.modal-body div button {
-	font-size: var(--font-size-l);
-	padding: 10px 20px;
-	background-color: #fff;
-	border-radius: var(--border-radius-s);
-}
-
-.modal-body div #create-btn {
-	color: var(--color-green);
-}
-
-.modal-body div #create-btn:hover {
-	background-color: #EEF8F0;
-	transition: background-color var(--hover-time);
 }
 
 .appear {
@@ -697,4 +652,103 @@ button:disabled {
 	to {
 		opacity: 0;
 	}
+}
+
+.modal-body div {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.modal-body div button {
+	font-size: var(--font-size-l);
+	padding: 10px 20px;
+	background-color: #fff;
+	border-radius: var(--border-radius-s);
+}
+
+.modal-body div .submit-btn {
+	color: var(--color-green);
+}
+
+.modal-body div .submit-btn:hover {
+	background-color: #EEF8F0;
+	transition: background-color var(--hover-time);
+}
+
+/* ========== new chat modal ========== */
+#new-chat-modal .modal-body {
+	width: 400px;
+	height: 300px;
+}
+
+#new-chat-modal .modal-body .select-div {
+	display: flex;
+	flex-direction: column;
+}
+
+#model-select {
+	width: 100%;
+	padding: 10px 20px;
+	margin: 20px 0;
+	border: none;
+	font-size: var(--font-size-s);
+	border-radius: var(--border-radius-m);
+	text-align: center;
+	-webkit-appearance: none;
+	/* for chrome */
+	-moz-appearance: none;
+	/*for firefox*/
+	appearance: none;
+	background: url('../images/icons/dropdown.png') no-repeat 97% 50%/10px 7px;
+	background-color: var(--color-lgray);
+}
+
+/* ========== setting modal ========== */
+#setting-modal .modal-body {
+	width: 500px;
+	height: 400px;
+}
+
+#setting-modal .modal-body div div {
+	/* background-color: red; */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 50%;
+	padding: 0px 0;
+}
+#setting-modal .modal-body p {
+	padding: 0px;
+	width: 10%;
+	font-size: var(--font-size-l);
+}
+
+#setting-modal .modal-body div div button {
+	width: 60%;
+	margin: auto;
+	margin-bottom: 5px;
+	padding: 5px 20px;
+	font-size: var(--font-size-s);
+}
+
+#setting-modal .modal-body div div input {
+	box-sizing: border-box;
+	font-size: 14px;
+	text-align: left;
+	width: 100%;
+	padding: 5px 7px;
+	border: 1px solid var(--color-hgray);
+	border-radius: 5px;
+	outline-color: #84CD94;
+}
+#setting-modal .modal-body div div p {
+	width: 100%;
+	margin: 3px auto;
+	padding: 0;
+	text-align: left;
+	font-size: 12px;
+}
+
+#withdraw-btn {
+	color: var(--color-red);
 }
