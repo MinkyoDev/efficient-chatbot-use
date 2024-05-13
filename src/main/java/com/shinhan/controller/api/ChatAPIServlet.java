@@ -38,8 +38,8 @@ public class ChatAPIServlet extends HttpServlet {
 		String localPath = getServletContext().getRealPath("/");
 		ChatLogService chatLogService = new ChatLogService();
 		String answer = chatLogService.getChatbotResponse(chatId, content, localPath);
-		
 
+		System.out.println("request: " + content + "/ response: " + content);
 		JSONObject responseData = new JSONObject();
 		responseData.put("answer", answer);
 

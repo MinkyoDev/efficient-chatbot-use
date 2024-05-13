@@ -19,7 +19,6 @@ public class OpenAIRequest {
 
 	private String sendRequest(String url, JSONObject jsonBody, String openAIKey) throws IOException {
 		URL urlObj = new URL(url);
-		System.out.println(jsonBody);
 		String jsonInputString = jsonBody.toString();
 
 		HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
