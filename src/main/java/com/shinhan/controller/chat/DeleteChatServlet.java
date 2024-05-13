@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import com.shinhan.domain.dto.ChatDTO;
 import com.shinhan.domain.dto.UserDTO;
 import com.shinhan.service.ChatService;
+import com.shinhan.utils.Constants;
 
 @WebServlet("/chat/delete-chat")
 public class DeleteChatServlet extends HttpServlet {
@@ -41,10 +42,13 @@ public class DeleteChatServlet extends HttpServlet {
 		List<ChatDTO> chatListModified = chatService.getAllOrderByModified(user.getEmail());
 		List<ChatDTO> chatList = chatService.getAllChats(user.getEmail());
 
-		// chatList이 없을 때 예외처리 하기
-		
-		System.out.println(chatList);
 		int chatId = 0;
+		// chatList이 없을 때
+		if (chatList.size() == 0) {
+			chatId = chatService.insertChat(user.getEmail(), Constants.DEFAULT_MODEL_NAME, false, true, true);
+			return chatId;
+		}
+		
 		if (chatListModified.size() == 0) {
 			chatId = chatList.get(0).getChat_id();
 		} else {

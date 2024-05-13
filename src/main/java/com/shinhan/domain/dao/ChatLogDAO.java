@@ -42,28 +42,6 @@ public class ChatLogDAO {
 	}
 
 	// select
-//	public List<LogDTO> selectAllByChatIDUserID(String userid, int chatid) {
-//		List<LogDTO> loglist = new ArrayList<>();
-//		String sql = "select * from chat_log join Chat using (chat_id) where chat_id = ? and user_id = ?";
-//		conn = DBUtil.dbConnection();
-//		try {
-//			conn.setAutoCommit(false);
-//			pst = conn.prepareStatement(sql);
-//			pst.setInt(1, chatid);
-//			pst.setString(2, userid);
-//			rs = pst.executeQuery();
-//			while (rs.next()) {
-//				LogDTO log = makeLog(rs);
-//				loglist.add(log);
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally {
-//			DBUtil.dbDisconnect(conn, st, rs);
-//		}
-//		return loglist;
-//	}
-//
 	public List<ChatLogDTO> selectByChatIDisNull(int chatid) {
 		List<ChatLogDTO> loglist = new ArrayList<>();
 		String sql = "select * from chat_log join Chat using (chat_id) where chat_id = ? and history_id is null order by create_at";
@@ -106,49 +84,6 @@ public class ChatLogDAO {
 		}
 		return loglist;
 	}
-
-//	public List<ChatLogDTO> selectTopNByChatID(int chatid, int N) {
-//		List<ChatLogDTO> loglist = new ArrayList<>();
-//		String sql = "select * from(select * from chat_log where chat_id = ? order by create_at desc) logs where rownum<=? order by logs.create_at asc";
-//		conn = DBUtil.dbConnection();
-//		try {
-//			conn.setAutoCommit(false);
-//			pst = conn.prepareStatement(sql);
-//			pst.setInt(1, chatid);
-//			pst.setInt(2, N);
-//			rs = pst.executeQuery();
-//			while (rs.next()) {
-//				ChatLogDTO log = makeChatLog(rs);
-//				loglist.add(log);
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally {
-//			DBUtil.dbDisconnect(conn, st, rs);
-//		}
-//		return loglist;
-//	}
-//
-//	public LogDTO selectByRequest(int chatid, String input) {
-//		LogDTO chat = null;
-//		String sql = "select * from chat_log where chat_id = ? and request = ?";
-//		conn = DBUtil.dbConnection();
-//		try {
-//			conn.setAutoCommit(false);
-//			pst = conn.prepareStatement(sql);
-//			pst.setInt(1, chatid);
-//			pst.setString(2, input);
-//			rs = pst.executeQuery();
-//			if (rs.next()) {
-//	            chat = makeLog(rs);
-//	        } 
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally {
-//			DBUtil.dbDisconnect(conn, st, rs);
-//		}
-//		return chat;
-//	}
 
 	// etc
 	public int calculateTotalTokens(int chatid) {

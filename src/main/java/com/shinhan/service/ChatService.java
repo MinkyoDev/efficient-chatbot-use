@@ -32,10 +32,6 @@ public class ChatService {
 		return chatDAO.selectByChatid(chatId);
 	}
 
-//	public List<LogDTO> getLogByChatid(String userid, int chatid) {
-//		return chatLogDAO.selectAllByChatIDUserID(userid, chatid);
-//	}
-
 	public int deleteChat(String userid, int chatid) {
 		return chatDAO.deleteChat(userid, chatid);
 	}
@@ -53,21 +49,5 @@ public class ChatService {
 		chat.setCeche_enabled(cache);
 		return chat;
 	}
-
-//	public void makeName(int chatid, HashMap<String, String> datas) {
-//		String prompt = datas.get("prompt") + datas.get("contents") + "\\nMake the title of the above conversation in English in one sentence or less";
-//		jr = openAIRequest.chatBot(Constants.MODEL_NAME_FOR_SUMMARY, prompt);
-//		String name = null;
-//		try {
-//			name = jr.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
-//		chatDAO.updateName(chatid, name);
-//	}
-//
-//	public ChatDTO getAllChatsByChatid(int chatid) {
-//		return chatDAO.selectByChatid(chatid);
-//	}
 
 }
