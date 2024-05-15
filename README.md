@@ -203,4 +203,3 @@ prompt에 들어가는 log의 total token의 양이 일정 갯수를 넘어가�
 
 ### Database
 ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=Oracle&logoColor=white)
-
